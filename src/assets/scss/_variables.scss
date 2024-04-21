@@ -1,0 +1,126 @@
+$white: #ffffff !default;
+$gray-100: #f6f9fc !default;
+$gray-200: #e9ecef !default;
+$gray-300: #e3e3e3 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #525f7f !default;
+$gray-800: #32325d !default;
+$gray-900: #212529 !default;
+$black: #000000 !default;
+
+$blue: #5e72e4 !default;
+$indigo: #5603ad !default;
+$purple: #8965e0 !default;
+$pink: #f3a4b5 !default;
+$red: #f5365c !default;
+$dark-red: #a0253d !default;
+$orange: #fb6340 !default;
+$yellow: #ffd600 !default;
+$dark-yellow: #937b01 !default;
+$green: #2dce89 !default;
+$dark-green: #1d885a !default;
+$teal: #11cdef !default;
+$cyan: #2bffc6 !default;
+
+$primary-color: $yellow;
+$secondary-color: $dark-yellow;
+$background-color: $gray-200;
+$border-color: $gray-500;
+$text-color: $gray-800;
+$disabled-text-color: $gray-500;
+$box-shadow: 0px 8px 15px #00000033;
+$hover-box-shadow: 0px 8px 15px #00000066;
+
+$border-radius: 10px;
+$transition: 0.3s all ease;
+$transition-quick: 0.15s all ease;
+
+// font styles
+$font-family: Arial, Helvetica, sans-serif;
+
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size: 1rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+
+$font-weight: 400;
+$font-weight-bold: 600;
+
+// page styles
+$page-padding: 12px;
+$auth-page-padding: 50px;
+
+$viewport-desktop: 1152px;
+$viewport-laptop: 991px;
+$viewport-tablet: 767px;
+
+$content-viewport-desktop: 90rem;
+$content-viewport-laptop: 72rem;
+$content-viewport-tablet: 42rem;
+$content-viewport-mobile: 27rem;
+
+$small-margin: 5px;
+$component-margin: 10px;
+$section-margin: 20px;
+
+// header styles
+$header-bar-height: 50px;
+
+// nav styles
+$nav-bar-width: 250px;
+$nav-item-padding: 10px;
+$nav-item-icon-width: 35px;
+
+// input styles
+$input-field-height: 2rem;
+$input-field-padding: 12px;
+$input-field-icon-width: 40px;
+
+$input-select-z-index: 60;
+
+// button styles
+$button-padding: 15px;
+$button-floating-y: -5px;
+$button-icon-size: 1.5rem;
+
+$floating-button-position: 30px;
+$floating-button-size: 1.5rem;
+$floating-sub-button-size: 1rem;
+
+// card styles
+$card-padding: 15px;
+
+$location-card-width: 300px;
+
+// table styles
+$table-row-height: 2rem;
+$table-pagination-padding: 10px;
+
+// modal styles
+$modal-background-z-index: 90;
+$modal-z-index: 100;
+$modal-background-color: #000000dd;
+
+// spinner overlay
+$overlay-background-color: #00000088;
+$overlay-z-index: 120;
+
+// toast styles
+$toast-background-color: $gray-800;
+$toast-z-index: 150;
+// $toast-width: 230px;
+$toast-width: 300px;
+$toast-padding: 15px;
+$toast-position-bottom: 50px;
+
+// others
+.disabled-selection {
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
