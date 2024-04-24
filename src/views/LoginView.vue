@@ -49,19 +49,22 @@ const onLoginClick = (): void => {
         hideSpinnerOverlay()
       })
       .catch((error: any) => {
-        if (error.response.data.errors.username) {
-          state.value.usernameError = error.response.data.errors.username
-        }
-        if (error.response.data.errors.password) {
-          state.value.passwordError = error.response.data.errors.password
-        }
-
-        if (error.response.data.errors.username || error.response.data.errors.password) {
-          changeToastLabel('Login failed. Please try again.')
-        } else if (error.response.data.errors.email) {
-          changeToastLabel(error.response.data.errors.email)
+        if (error.response == null) {
+          changeToastLabel('Server error. Please try again.')
         } else {
-          changeToastLabel('Something went wrong while logging you in.')
+          if (error.response.data.errors.username) {
+            state.value.usernameError = error.response.data.errors.username
+          }
+          if (error.response.data.errors.password) {
+            state.value.passwordError = error.response.data.errors.password
+          }
+          if (error.response.data.errors.username || error.response.data.errors.password) {
+            changeToastLabel('Login failed. Please try again.')
+          } else if (error.response.data.errors.email) {
+            changeToastLabel(error.response.data.errors.email)
+          } else {
+            changeToastLabel('Something went wrong while logging you in.')
+          }
         }
 
         showToast()
