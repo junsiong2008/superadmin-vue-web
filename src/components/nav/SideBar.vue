@@ -2,55 +2,81 @@
 
 <template>
   <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-    <div class="app-brand demo">
-      <a href="index.html" class="app-brand-link">
-        <span class="app-brand-logo demo">
+    <div class="app-brand">
+      <div class="app-brand-link">
+        <span class="app-brand-logo">
           <img src="@/assets/images/logoOnly.svg" class="logo" />
         </span>
         <span class="app-brand-text demo menu-text fw-bolder ms-2">EV Home</span>
-      </a>
-
-      <a
-        href="javascript:void(0);"
-        class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
-      >
-        <i class="bx bx-chevron-left bx-sm align-middle"></i>
-      </a>
+      </div>
     </div>
 
-    <div class="menu-inner-shadow"></div>
-
     <ul class="menu-inner py-1">
-      <!-- Dashboard -->
-      <li class="menu-item active">
-        <a href="index.html" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-home-circle"></i>
-          <div data-i18n="Analytics">Dashboard</div>
-        </a>
-      </li>
-      <!-- Dashboard -->
       <li class="menu-item">
-        <a href="index.html" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-layout"></i>
-          <div data-i18n="Layouts">Layouts</div>
-        </a>
+        <div class="menu-link">
+          <i class="menu-icon bx bx-sitemap"></i>
+          <div>Sites</div>
+        </div>
+      </li>
+      <li class="menu-item">
+        <div class="menu-link">
+          <i class="menu-icon bx bx-network-chart"></i>
+          <div>Charge Points</div>
+        </div>
+      </li>
+      <li class="menu-item">
+        <div class="menu-link">
+          <i class="menu-icon bx bx-plug"></i>
+          <div>Connectors</div>
+        </div>
+      </li>
+      <li class="menu-item">
+        <div class="menu-link">
+          <i class="menu-icon bx bx-purchase-tag-alt"></i>
+          <div>Connector Prices</div>
+        </div>
+      </li>
+      <li class="menu-item active">
+        <div class="menu-link">
+          <i class="menu-icon bx bx-group"></i>
+          <div>User Groups</div>
+        </div>
+      </li>
+      <li class="menu-item">
+        <div class="menu-link">
+          <i class="menu-icon bx bx-user"></i>
+          <div>Users</div>
+        </div>
       </li>
     </ul>
   </aside>
 </template>
 
 <style scoped>
-.menu .app-brand.demo {
+.menu .app-brand {
+  padding-right: 2rem;
+  padding-left: 2rem;
   height: 64px;
   margin-top: 12px;
 }
 
-.app-brand-text.demo {
+.app-brand-link {
+  color: #696cff;
+  display: flex;
+  align-items: center;
+}
+
+.app-brand-text {
   font-size: 1.25rem;
   letter-spacing: -0.5px;
+  color: #566a7f;
 }
 
 .logo {
   height: 48px;
+}
+
+.menu-item {
+  cursor: pointer;
 }
 </style>
