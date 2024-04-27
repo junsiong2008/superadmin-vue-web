@@ -38,7 +38,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     })
   }
 
-  const login = (payload: URLSearchParams) => {
+  const login = (payload: URLSearchParams): Promise<void> => {
     return axios
       .post(`${url}/login`, payload, {
         headers: {
@@ -51,7 +51,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       })
   }
 
-  const logout = () => {
+  const logout = (): Promise<void> => {
     return axios
       .get(`${url}/logout`, {
         headers: {
