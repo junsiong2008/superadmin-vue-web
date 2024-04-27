@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia'
 
+type Payload = {
+  query: string
+  data: Array<any>
+  columns: Array<string>
+}
+
 export const useTableStore = defineStore('table', () => {
-  const decodeToRows = async (payload: any) => {
+  const decodeToRows = async (payload: Payload) => {
     return new Promise((resolve, reject) => {
       const ids: Array<String | Number> = []
       const rows: Array<Array<String | Number>> = []
