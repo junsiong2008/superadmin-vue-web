@@ -2,9 +2,10 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useViewStore = defineStore('view', () => {
-  const spinnerOverlayVisible = ref(false)
-  const toastLabel = ref('')
-  const toastVisible = ref(false)
+  const headerTitle = ref<string>('')
+  const spinnerOverlayVisible = ref<boolean>(false)
+  const toastLabel = ref<string>('')
+  const toastVisible = ref<boolean>(false)
 
   const showSpinnerOverlay = () => {
     spinnerOverlayVisible.value = true
@@ -22,6 +23,10 @@ export const useViewStore = defineStore('view', () => {
     toastVisible.value = false
   }
 
+  const changeHeaderTitle = (payload: string) => {
+    headerTitle.value = payload
+  }
+
   const changeToastLabel = (payload: string) => {
     toastLabel.value = payload
   }
@@ -30,10 +35,12 @@ export const useViewStore = defineStore('view', () => {
     spinnerOverlayVisible,
     toastVisible,
     toastLabel,
+    headerTitle,
     showSpinnerOverlay,
     hideSpinnerOverlay,
     showToast,
     hideToast,
-    changeToastLabel
+    changeToastLabel,
+    changeHeaderTitle
   }
 })
