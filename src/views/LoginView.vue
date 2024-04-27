@@ -44,7 +44,7 @@ const onLoginClick = (): void => {
     login(params)
       .then(() => {
         router.replace({
-          name: 'Home'
+          name: 'Charge Point Locations'
         })
         hideSpinnerOverlay()
       })
