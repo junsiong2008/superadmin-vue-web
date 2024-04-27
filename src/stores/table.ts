@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 type Payload = {
-  query: string
+  query?: string
   data: Array<any>
   columns: Array<string>
 }
