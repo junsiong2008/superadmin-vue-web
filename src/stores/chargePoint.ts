@@ -4,13 +4,13 @@ import axios, { type AxiosResponse } from 'axios'
 const url = import.meta.env.VITE_EVHOME_SUPERADMIN_BASE_URL
 
 type Payload = {
-  query: string
+  query?: string
 }
 
-export const useChargePointLocationStore = defineStore('chargePoint', () => {
+export const useChargePointStore = defineStore('chargePoint', () => {
   const getAll = (payload: Payload): Promise<void | AxiosResponse> => {
     return axios
-      .get(`${url}/charge-point-location?${payload.query}`, {
+      .get(`${url}/charge-point?${payload.query}`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
