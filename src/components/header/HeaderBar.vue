@@ -42,20 +42,18 @@ const onLogoutClick = () => {
       </div>
 
       <ul class="navbar-nav flex-row align-items-center ms-auto">
-        <!-- User -->
         <li class="nav-item">
           <div>
-            <i class="menu-icon bx bxs-user-circle" @click="onLogoutClick"></i>
+            <i class="menu-icon bx bx-log-out" @click="onLogoutClick"></i>
           </div>
         </li>
-        <!--/ User -->
       </ul>
     </div>
   </nav>
 </template>
 
 <style scoped>
-.bxs-user-circle {
+.bx-log-out {
   font-size: 1.75rem;
   cursor: pointer;
 }
