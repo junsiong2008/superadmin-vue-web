@@ -9,6 +9,8 @@ import ChargePointLocationsView from '@/views/ChargePointLocationsView.vue'
 import ChargePointPortsView from '@/views/ChargePointPortsView.vue'
 import UserGroupsView from '@/views/UserGroupsView.vue'
 import UsersView from '@/views/UsersView.vue'
+import ChargePointPortPricesView from '@/views/ChargePointPortPricesView.vue'
+import UserGroupUsersView from '@/views/UserGroupUsersView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,11 +25,6 @@ const router = createRouter({
       name: 'Dashboard',
       component: DashboardLayout,
       children: [
-        // {
-        //   path: 'home',
-        //   name: 'Home',
-        //   component: HomeView
-        // },
         {
           path: 'sites',
           name: 'Charge Point Locations',
@@ -44,9 +41,19 @@ const router = createRouter({
           component: ChargePointPortsView
         },
         {
+          path: 'connector-prices',
+          name: 'Charge Point Port Prices',
+          component: ChargePointPortPricesView
+        },
+        {
           path: 'user-groups',
           name: 'User Groups',
           component: UserGroupsView
+        },
+        {
+          path: 'user-group-users',
+          name: 'User Group Users',
+          component: UserGroupUsersView
         },
         {
           path: 'users',

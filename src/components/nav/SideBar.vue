@@ -29,9 +29,19 @@ const navItems: Ref<NavItem[]> = ref([
     routeName: 'Charge Point Ports'
   },
   {
+    label: 'Connector Prices',
+    icon: 'bx bx-purchase-tag-alt',
+    routeName: 'Charge Point Port Prices'
+  },
+  {
     label: 'User Groups',
     icon: 'bx bx-group',
     routeName: 'User Groups'
+  },
+  {
+    label: 'User Group Users',
+    icon: 'bx bx-user-pin',
+    routeName: 'User Group Users'
   },
   {
     label: 'Users',
