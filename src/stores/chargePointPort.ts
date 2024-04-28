@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import axios, { type AxiosResponse } from 'axios'
+import { useAuthenticationStore } from './authentication'
+import { useRouter } from 'vue-router'
 
 const url = import.meta.env.VITE_EVHOME_SUPERADMIN_BASE_URL
 
@@ -8,6 +10,9 @@ type Payload = {
 }
 
 export const useChargePointPortStore = defineStore('chargePointPort', () => {
+  const authStore = useAuthenticationStore()
+  const router = useRouter()
+
   const getAll = (payload: Payload): Promise<void | AxiosResponse> => {
     return axios
       .get(`${url}/charge-point-port?${payload.query}`, {
@@ -20,7 +25,19 @@ export const useChargePointPortStore = defineStore('chargePointPort', () => {
       .catch((error: any) => {
         if (error.response.status === 403) {
           if (error.response.data.message === 'User is not logged in.') {
-            // TODO: Logout user
+            authStore
+              .logout()
+              .then(() => {
+                router.push({
+                  name: 'Login'
+                })
+              })
+              .catch(() => {
+                router.push({
+                  name: 'Login'
+                })
+              })
+          } else {
             throw error
           }
         } else {
