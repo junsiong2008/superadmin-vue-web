@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useViewStore } from '@/stores/view'
 import { useAuthenticationStore } from '@/stores/authentication'
-import { storeToRefs } from 'pinia'
 import router from '@/router'
+import { storeToRefs } from 'pinia'
 
 const viewStore = useViewStore()
 const authStore = useAuthenticationStore()
@@ -40,7 +40,6 @@ const onLogoutClick = () => {
           <h5 class="card-title m-0 me-2">{{ headerTitle }}</h5>
         </div>
       </div>
-
       <ul class="navbar-nav flex-row align-items-center ms-auto">
         <li class="nav-item">
           <div>
