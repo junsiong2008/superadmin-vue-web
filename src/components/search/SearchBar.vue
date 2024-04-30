@@ -1,9 +1,25 @@
 <script lang="ts" setup>
-const handleSearch = (): void => {}
+import { useSearchStore } from '@/stores/search'
+import { ref, watch } from 'vue'
+
+const searchInput = ref('')
+
+const searchStore = useSearchStore()
+const { updateSearchQuery, resetSearchQuery } = searchStore
+
+const handleSearch = (): void => {
+  updateSearchQuery(searchInput.value)
+}
 
 const onSearchInput = (event: Event): void => {
-  console.log((event.target as HTMLInputElement).value)
+  searchInput.value = (event.target as HTMLInputElement).value
 }
+
+watch(searchInput, async (newValue: string): Promise<void> => {
+  if (!newValue) {
+    resetSearchQuery()
+  }
+})
 </script>
 <template>
   <div class="d-flex align-items-center">

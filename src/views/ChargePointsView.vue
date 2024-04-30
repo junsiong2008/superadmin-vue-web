@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import { storeToRefs } from 'pinia'
 
 import { useViewStore } from '@/stores/view'
 import { useChargePointStore } from '@/stores/chargePoint'
 import { useTableStore } from '@/stores/table'
+import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
 
@@ -31,10 +33,20 @@ const state: Ref<ChargePointViewState> = ref({
 const viewStore = useViewStore()
 const chargePointStore = useChargePointStore()
 const tableStore = useTableStore()
+const searchStore = useSearchStore()
 
 const { changeHeaderTitle } = viewStore
 const { getAll } = chargePointStore
 const { decodeToRows } = tableStore
+
+const { searchQuery } = storeToRefs(searchStore)
+const { resetSearchQuery } = searchStore
+
+watch(searchQuery, async (newValue: string): Promise<void> => {
+  state.value.page = 1
+  state.value.query = newValue
+  loadData()
+})
 
 const loadData = () => {
   getAll({
@@ -64,7 +76,12 @@ onMounted(() => {
   changeHeaderTitle('Charge Points')
   loadData()
 })
+
+onUnmounted(() => {
+  resetSearchQuery()
+})
 </script>
+
 <template>
   <DataTable
     title="Charge Points"

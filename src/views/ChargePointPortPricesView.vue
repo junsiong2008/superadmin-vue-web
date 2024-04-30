@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { onMounted, ref, type Ref } from 'vue'
-
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import type { Ref } from 'vue'
 import { useViewStore } from '@/stores/view'
 import { useChargePointPortPriceStore } from '@/stores/chargePointPortPrice'
 import { useTableStore } from '@/stores/table'
+import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
+import { storeToRefs } from 'pinia'
 
 type ChargePointPortPriceViewState = {
   idRows: Array<any>
@@ -30,10 +32,20 @@ const state: Ref<ChargePointPortPriceViewState> = ref({
 const viewStore = useViewStore()
 const chargePointPortPriceStore = useChargePointPortPriceStore()
 const tableStore = useTableStore()
+const searchStore = useSearchStore()
 
 const { changeHeaderTitle } = viewStore
 const { getAll } = chargePointPortPriceStore
 const { decodeToRows } = tableStore
+
+const { searchQuery } = storeToRefs(searchStore)
+const { resetSearchQuery } = searchStore
+
+watch(searchQuery, async (newValue: string): Promise<void> => {
+  state.value.page = 1
+  state.value.query = newValue
+  loadData()
+})
 
 const loadData = () => {
   getAll({
@@ -54,6 +66,10 @@ const loadData = () => {
 onMounted(() => {
   changeHeaderTitle('Connector Price')
   loadData()
+})
+
+onUnmounted(() => {
+  resetSearchQuery()
 })
 </script>
 
