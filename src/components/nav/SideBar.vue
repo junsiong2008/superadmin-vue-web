@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -51,6 +51,7 @@ const navItems: Ref<NavItem[]> = ref([
 ])
 
 const activeIndex = ref<number>(0)
+
 const onNavItemClick = (index: number): void => {
   activeIndex.value = index
   if (route.name != navItems.value[index].routeName) {
@@ -59,6 +60,11 @@ const onNavItemClick = (index: number): void => {
     })
   }
 }
+
+onMounted(() => {
+  const routeIndex = navItems.value.findIndex((e: NavItem) => e.routeName === route.name)
+  activeIndex.value = routeIndex !== -1 ? routeIndex : 0
+})
 </script>
 
 <template>
