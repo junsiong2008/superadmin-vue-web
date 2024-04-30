@@ -3,6 +3,7 @@ import { useViewStore } from '@/stores/view'
 import { useAuthenticationStore } from '@/stores/authentication'
 import router from '@/router'
 import { storeToRefs } from 'pinia'
+import SearchBar from '../search/SearchBar.vue'
 
 const viewStore = useViewStore()
 const authStore = useAuthenticationStore()
@@ -37,7 +38,7 @@ const onLogoutClick = () => {
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
       <div class="navbar-nav align-items-center">
         <div class="nav-item d-flex align-items-center">
-          <h5 class="card-title m-0 me-2">{{ headerTitle }}</h5>
+          <SearchBar />
         </div>
       </div>
       <ul class="navbar-nav flex-row align-items-center ms-auto">

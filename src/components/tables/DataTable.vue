@@ -16,10 +16,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div class="card">
-    <div class="d-flex justify-content-between align-items-center pb-2">
-      <h5 class="card-header">{{ title }}</h5>
-      <SearchBar />
-    </div>
+    <h5 class="card-header">{{ title }}</h5>
 
     <div class="table-responsive text-nowrap">
       <table class="table">
