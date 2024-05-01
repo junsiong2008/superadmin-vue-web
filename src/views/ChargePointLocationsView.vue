@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
@@ -15,6 +15,9 @@ type ChargePointLocationViewState = {
   dataRows: []
   page: number
   pageSize: number
+  from: number
+  to: number
+  total: number
   query: string
   sortBy: string
   sort: string
@@ -25,6 +28,9 @@ const state: Ref<ChargePointLocationViewState> = ref({
   dataRows: [],
   page: 1,
   pageSize: 10,
+  from: 0,
+  to: 0,
+  total: 0,
   query: '',
   sortBy: 'name',
   sort: 'asc'
@@ -48,21 +54,67 @@ watch(searchQuery, async (newValue: string): Promise<void> => {
   loadData()
 })
 
+watch(
+  () => state.value.page,
+  async () => {
+    loadData()
+  }
+)
+
+const totalPage = computed((): number => {
+  return state.value.total != 0 ? Math.ceil(state.value.total / state.value.pageSize) : 0
+})
+
 const loadData = () => {
   getAll({
     query: `page=${state.value.page}&page_size=${state.value.pageSize}&query=${state.value.query}&sort_by=${state.value.sortBy}&sort=${state.value.sort}`
-  }).then((response: any) => {
-    if (response.data.data.charge_point_locations) {
-      decodeToRows({
-        data: response.data.data.charge_point_locations,
-        columns: ['id', 'name', 'address', 'user_group_name', 'is_private', 'count']
-      }).then((result: any) => {
-        state.value.idRows = result.id
-        state.value.dataRows = result.data
-      })
-    }
   })
+    .then((response: any) => {
+      if (response.data.data.charge_point_locations) {
+        decodeToRows({
+          data: response.data.data.charge_point_locations,
+          columns: ['id', 'name', 'address', 'user_group_name', 'is_private', 'count']
+        }).then((result: any) => {
+          state.value.idRows = result.id
+          state.value.dataRows = result.data
+        })
+      }
+
+      if (response.data.meta) {
+        state.value.from = response.data.meta.from
+        state.value.to = response.data.meta.to
+        state.value.total = response.data.meta.total
+      }
+    })
+    .catch((error: any) => {
+      console.error(error)
+    })
 }
+
+const onFirstClick = (): void => {
+  state.value.page = 1
+}
+
+const onLastClick = (): void => {
+  state.value.page = totalPage.value
+}
+
+const onPreviousClick = (): void => {
+  if (state.value.page > 1) {
+    state.value.page = state.value.page - 1
+  }
+}
+
+const onNextClick = (): void => {
+  if (state.value.page < totalPage.value) {
+    state.value.page = state.value.page + 1
+  }
+}
+
+const onPageClick = (page: number): void => {
+  state.value.page = page
+}
+
 onMounted(() => {
   changeHeaderTitle('Sites')
   loadData()
@@ -77,5 +129,14 @@ onUnmounted(() => {
     title="Charge Point Locations"
     :headers="['Id', 'Name', 'Address', 'Managed By', 'Is Private', 'Charge Point Count']"
     :dataRows="state.dataRows"
+    :from="state.from"
+    :to="state.to"
+    :pageSize="state.pageSize"
+    :total="state.total"
+    @onFirstClick="onFirstClick"
+    @onLastClick="onLastClick"
+    @onPreviousClick="onPreviousClick"
+    @onNextClick="onNextClick"
+    @onPageClick="onPageClick"
   />
 </template>

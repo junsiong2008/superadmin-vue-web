@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
@@ -15,6 +15,9 @@ type UserViewState = {
   dataRows: Array<any>
   page: number
   pageSize: number
+  from: number
+  to: number
+  total: number
   query: string
   sortBy: string
   sort: string
@@ -25,6 +28,9 @@ const state: Ref<UserViewState> = ref({
   dataRows: [],
   page: 1,
   pageSize: 10,
+  from: 0,
+  to: 0,
+  total: 0,
   query: '',
   sortBy: 'name',
   sort: 'asc'
@@ -48,24 +54,45 @@ watch(searchQuery, async (newValue: string): Promise<void> => {
   loadData()
 })
 
+watch(
+  () => state.value.page,
+  async () => {
+    loadData()
+  }
+)
+
+const totalPage = computed((): number => {
+  return state.value.total != 0 ? Math.ceil(state.value.total / state.value.pageSize) : 0
+})
+
 const loadData = () => {
   getAll({
     query: `page=${state.value.page}&page_size=${state.value.pageSize}&query=${state.value.query}&sort_by=${state.value.sortBy}&sort=${state.value.sort}`
-  }).then((response: any) => {
-    if (response.data.data.users) {
-      decodeToRows({
-        data: response.data.data.users,
-        columns: ['id', 'id_tag', 'name', 'phone', 'email', 'created_at', 'verified_at']
-      }).then((result: any) => {
-        state.value.idRows = result.id
-        state.value.dataRows = result.data.map((row: any) => {
-          row[5] = formatDatetime(row[5])
-          row[6] = formatDatetime(row[6])
-          return row
-        })
-      })
-    }
   })
+    .then((response: any) => {
+      if (response.data.data.users) {
+        decodeToRows({
+          data: response.data.data.users,
+          columns: ['id', 'id_tag', 'name', 'phone', 'email', 'created_at', 'verified_at']
+        }).then((result: any) => {
+          state.value.idRows = result.id
+          state.value.dataRows = result.data.map((row: any) => {
+            row[5] = formatDatetime(row[5])
+            row[6] = formatDatetime(row[6])
+            return row
+          })
+        })
+      }
+
+      if (response.data.meta) {
+        state.value.from = response.data.meta.from
+        state.value.to = response.data.meta.to
+        state.value.total = response.data.meta.total
+      }
+    })
+    .catch((error: any) => {
+      console.error(error)
+    })
 }
 
 const formatDatetime = (timestamp: number): string => {
@@ -83,6 +110,30 @@ const formatDatetime = (timestamp: number): string => {
   }
 }
 
+const onFirstClick = (): void => {
+  state.value.page = 1
+}
+
+const onLastClick = (): void => {
+  state.value.page = totalPage.value
+}
+
+const onPreviousClick = (): void => {
+  if (state.value.page > 1) {
+    state.value.page = state.value.page - 1
+  }
+}
+
+const onNextClick = (): void => {
+  if (state.value.page < totalPage.value) {
+    state.value.page = state.value.page + 1
+  }
+}
+
+const onPageClick = (page: number): void => {
+  state.value.page = page
+}
+
 onMounted(() => {
   changeHeaderTitle('Users')
   loadData()
@@ -97,5 +148,14 @@ onUnmounted(() => {
     title="Users"
     :headers="['Id', 'Id Tag', 'Name', 'Phone', 'Email', 'Created At', 'Verified At']"
     :dataRows="state.dataRows"
+    :from="state.from"
+    :to="state.to"
+    :pageSize="state.pageSize"
+    :total="state.total"
+    @onFirstClick="onFirstClick"
+    @onLastClick="onLastClick"
+    @onPreviousClick="onPreviousClick"
+    @onNextClick="onNextClick"
+    @onPageClick="onPageClick"
   />
 </template>
