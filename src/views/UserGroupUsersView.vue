@@ -10,6 +10,12 @@ import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
 
+type Header = {
+  name: string
+  label: string
+  allowSort: boolean
+}
+
 type UserGroupUserViewState = {
   idRows: Array<any>
   dataRows: Array<any>
@@ -20,7 +26,7 @@ type UserGroupUserViewState = {
   total: number
   query: string
   sortBy: string
-  sort: string
+  sort: 'asc' | 'desc'
 }
 
 const state: Ref<UserGroupUserViewState> = ref({
@@ -35,6 +41,54 @@ const state: Ref<UserGroupUserViewState> = ref({
   sortBy: 'name',
   sort: 'asc'
 })
+
+const headers: Array<Header> = [
+  {
+    name: 'id',
+    label: 'Id',
+    allowSort: false
+  },
+  {
+    name: 'user_name',
+    label: 'User Name',
+    allowSort: true
+  },
+  {
+    name: 'user_id',
+    label: 'User Id',
+    allowSort: false
+  },
+  {
+    name: 'user_email',
+    label: 'User Email',
+    allowSort: true
+  },
+  {
+    name: 'user_phone',
+    label: 'User Phone',
+    allowSort: true
+  },
+  {
+    name: 'is_operator',
+    label: 'Is Operator',
+    allowSort: false
+  },
+  {
+    name: 'is_admin',
+    label: 'Is Admin',
+    allowSort: false
+  },
+  {
+    name: 'user_group_name',
+    label: 'User Group Name',
+    allowSort: true
+  },
+  {
+    name: 'is_removed',
+    label: 'Is Removed',
+    allowSort: false
+  }
+]
 
 const viewStore = useViewStore()
 const userGroupUserStore = useUserGroupUserStore()
@@ -54,12 +108,9 @@ watch(searchQuery, async (newValue: string): Promise<void> => {
   loadData()
 })
 
-watch(
-  () => state.value.page,
-  async () => {
-    loadData()
-  }
-)
+watch([() => state.value.page, () => state.value.sort, () => state.value.sortBy], async () => {
+  loadData()
+})
 
 const totalPage = computed((): number => {
   return state.value.total != 0 ? Math.ceil(state.value.total / state.value.pageSize) : 0
@@ -73,17 +124,7 @@ const loadData = () => {
       if (response.data.data.user_group_users) {
         decodeToRows({
           data: response.data.data.user_group_users,
-          columns: [
-            'id',
-            'user_name',
-            'user_id',
-            'user_email',
-            'user_phone',
-            'is_operator',
-            'is_admin',
-            'user_group_name',
-            'is_removed'
-          ]
+          columns: headers.map((i: Header): string => i.name)
         }).then((result: any) => {
           state.value.idRows = result.id
           state.value.dataRows = result.data
@@ -125,6 +166,12 @@ const onPageClick = (page: number): void => {
   state.value.page = page
 }
 
+const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
+  state.value.sortBy = field
+  state.value.sort = sort
+  state.value.page = 1
+}
+
 onMounted(() => {
   changeHeaderTitle('User Group Users')
   loadData()
@@ -138,26 +185,19 @@ onUnmounted(() => {
 <template>
   <DataTable
     title="User Group Users"
-    :headers="[
-      'Id',
-      'User Name',
-      'User Id',
-      'User Email',
-      'User Phone',
-      'Is Operator',
-      'Is Admin',
-      'User Group Name',
-      'Is Removed'
-    ]"
+    :headers="headers"
     :dataRows="state.dataRows"
     :from="state.from"
     :to="state.to"
     :pageSize="state.pageSize"
     :total="state.total"
+    :sort="state.sort"
+    :sortBy="state.sortBy"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
+    @onSortClick="onSortClick"
   />
 </template>

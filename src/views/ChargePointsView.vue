@@ -10,6 +10,12 @@ import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
 
+type Header = {
+  name: string
+  label: string
+  allowSort: boolean
+}
+
 type ChargePointViewState = {
   idRows: Array<any>
   dataRows: Array<any>
@@ -20,7 +26,7 @@ type ChargePointViewState = {
   total: number
   query: string
   sortBy: string
-  sort: string
+  sort: 'asc' | 'desc'
 }
 
 const state: Ref<ChargePointViewState> = ref({
@@ -36,6 +42,43 @@ const state: Ref<ChargePointViewState> = ref({
   sort: 'asc'
 })
 
+const headers: Array<Header> = [
+  {
+    name: 'id',
+    label: 'Id',
+    allowSort: false
+  },
+  {
+    name: 'name',
+    label: 'Name',
+    allowSort: true
+  },
+  {
+    name: 'model',
+    label: 'Model',
+    allowSort: true
+  },
+  {
+    name: 'serial_number',
+    label: 'Serial Number',
+    allowSort: true
+  },
+  {
+    name: 'firmware_version',
+    label: 'Firmware Version',
+    allowSort: true
+  },
+  {
+    name: 'count',
+    label: 'Connector Count',
+    allowSort: true
+  },
+  {
+    name: 'charge_point_location_name',
+    label: 'Charge Point Location',
+    allowSort: true
+  }
+]
 const viewStore = useViewStore()
 const chargePointStore = useChargePointStore()
 const tableStore = useTableStore()
@@ -54,12 +97,9 @@ watch(searchQuery, async (newValue: string): Promise<void> => {
   loadData()
 })
 
-watch(
-  () => state.value.page,
-  async () => {
-    loadData()
-  }
-)
+watch([() => state.value.page, () => state.value.sort, () => state.value.sortBy], async () => {
+  loadData()
+})
 
 const totalPage = computed((): number => {
   return state.value.total != 0 ? Math.ceil(state.value.total / state.value.pageSize) : 0
@@ -73,15 +113,7 @@ const loadData = () => {
       if (response.data.data.charge_points) {
         decodeToRows({
           data: response.data.data.charge_points,
-          columns: [
-            'id',
-            'name',
-            'model',
-            'serial_number',
-            'firmware_version',
-            'count',
-            'charge_point_location_name'
-          ]
+          columns: headers.map((i: Header): string => i.name)
         }).then((result: any) => {
           state.value.idRows = result.id
           state.value.dataRows = result.data
@@ -123,6 +155,12 @@ const onPageClick = (page: number): void => {
   state.value.page = page
 }
 
+const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
+  state.value.sortBy = field
+  state.value.sort = sort
+  state.value.page = 1
+}
+
 onMounted(() => {
   changeHeaderTitle('Charge Points')
   loadData()
@@ -136,24 +174,19 @@ onUnmounted(() => {
 <template>
   <DataTable
     title="Charge Points"
-    :headers="[
-      'Id',
-      'Name',
-      'Model',
-      'Serial Number',
-      'Firmware Version',
-      'Connector Count',
-      'Charge Point Location'
-    ]"
+    :headers="headers"
     :dataRows="state.dataRows"
     :from="state.from"
     :to="state.to"
     :pageSize="state.pageSize"
     :total="state.total"
+    :sort="state.sort"
+    :sortBy="state.sortBy"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
+    @onSortClick="onSortClick"
   />
 </template>

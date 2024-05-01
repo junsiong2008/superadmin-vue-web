@@ -10,6 +10,12 @@ import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
 
+type Header = {
+  name: string
+  label: string
+  allowSort: boolean
+}
+
 type UserGroupViewState = {
   idRows: Array<any>
   dataRows: Array<any>
@@ -20,7 +26,7 @@ type UserGroupViewState = {
   total: number
   query: string
   sortBy: string
-  sort: string
+  sort: 'asc' | 'desc'
 }
 
 const state: Ref<UserGroupViewState> = ref({
@@ -35,6 +41,34 @@ const state: Ref<UserGroupViewState> = ref({
   sortBy: 'name',
   sort: 'asc'
 })
+
+const headers: Array<Header> = [
+  {
+    name: 'id',
+    label: 'Id',
+    allowSort: false
+  },
+  {
+    name: 'name',
+    label: 'Name',
+    allowSort: true
+  },
+  {
+    name: 'email',
+    label: 'Email',
+    allowSort: true
+  },
+  {
+    name: 'phone',
+    label: 'Phone',
+    allowSort: true
+  },
+  {
+    name: 'is_removed',
+    label: 'Is Removed',
+    allowSort: false
+  }
+]
 
 const viewStore = useViewStore()
 const userGroupStore = useUserGroupStore()
@@ -54,12 +88,9 @@ watch(searchQuery, async (newValue: string): Promise<void> => {
   loadData()
 })
 
-watch(
-  () => state.value.page,
-  async () => {
-    loadData()
-  }
-)
+watch([() => state.value.page, () => state.value.sort, () => state.value.sortBy], async () => {
+  loadData()
+})
 
 const totalPage = computed((): number => {
   return state.value.total != 0 ? Math.ceil(state.value.total / state.value.pageSize) : 0
@@ -73,7 +104,7 @@ const loadData = () => {
       if (response.data.data.user_groups) {
         decodeToRows({
           data: response.data.data.user_groups,
-          columns: ['id', 'name', 'email', 'phone', 'is_removed']
+          columns: headers.map((i: Header): string => i.name)
         }).then((result: any) => {
           state.value.idRows = result.id
           state.value.dataRows = result.data
@@ -115,6 +146,12 @@ const onPageClick = (page: number): void => {
   state.value.page = page
 }
 
+const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
+  state.value.sortBy = field
+  state.value.sort = sort
+  state.value.page = 1
+}
+
 onMounted(() => {
   changeHeaderTitle('User Groups')
   loadData()
@@ -127,16 +164,19 @@ onUnmounted(() => {
 <template>
   <DataTable
     title="User Groups"
-    :headers="['Id', 'Name', 'Email', 'Phone', 'Is Removed']"
+    :headers="headers"
     :dataRows="state.dataRows"
     :from="state.from"
     :to="state.to"
     :pageSize="state.pageSize"
     :total="state.total"
+    :sort="state.sort"
+    :sortBy="state.sortBy"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
+    @onSortClick="onSortClick"
   />
 </template>

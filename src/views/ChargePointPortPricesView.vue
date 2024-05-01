@@ -1,13 +1,20 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import { storeToRefs } from 'pinia'
+
 import { useViewStore } from '@/stores/view'
 import { useChargePointPortPriceStore } from '@/stores/chargePointPortPrice'
 import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
-import { storeToRefs } from 'pinia'
+
+type Header = {
+  name: string
+  label: string
+  allowSort: boolean
+}
 
 type ChargePointPortPriceViewState = {
   idRows: Array<any>
@@ -19,7 +26,7 @@ type ChargePointPortPriceViewState = {
   total: number
   query: string
   sortBy: string
-  sort: string
+  sort: 'asc' | 'desc'
 }
 
 const state: Ref<ChargePointPortPriceViewState> = ref({
@@ -34,6 +41,24 @@ const state: Ref<ChargePointPortPriceViewState> = ref({
   sortBy: 'name',
   sort: 'asc'
 })
+
+const headers: Array<Header> = [
+  {
+    name: 'id',
+    label: 'Id',
+    allowSort: false
+  },
+  {
+    name: 'name',
+    label: 'Name',
+    allowSort: true
+  },
+  {
+    name: 'price',
+    label: 'Price',
+    allowSort: false
+  }
+]
 
 const viewStore = useViewStore()
 const chargePointPortPriceStore = useChargePointPortPriceStore()
@@ -53,12 +78,9 @@ watch(searchQuery, async (newValue: string): Promise<void> => {
   loadData()
 })
 
-watch(
-  () => state.value.page,
-  async () => {
-    loadData()
-  }
-)
+watch([() => state.value.page, () => state.value.sort, () => state.value.sortBy], async () => {
+  loadData()
+})
 
 const totalPage = computed((): number => {
   return state.value.total != 0 ? Math.ceil(state.value.total / state.value.pageSize) : 0
@@ -72,7 +94,7 @@ const loadData = () => {
       if (response.data.data.charge_point_port_prices) {
         decodeToRows({
           data: response.data.data.charge_point_port_prices,
-          columns: ['id', 'name', 'price']
+          columns: headers.map((i: Header): string => i.name)
         }).then((result: any) => {
           state.value.idRows = result.id
           state.value.dataRows = result.data
@@ -114,6 +136,12 @@ const onPageClick = (page: number): void => {
   state.value.page = page
 }
 
+const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
+  state.value.sortBy = field
+  state.value.sort = sort
+  state.value.page = 1
+}
+
 onMounted(() => {
   changeHeaderTitle('Connector Price')
   loadData()
@@ -127,16 +155,19 @@ onUnmounted(() => {
 <template>
   <DataTable
     title="Charge Point Port Prices"
-    :headers="['Id', 'Name', 'Price']"
+    :headers="headers"
     :dataRows="state.dataRows"
     :from="state.from"
     :to="state.to"
     :pageSize="state.pageSize"
     :total="state.total"
+    :sort="state.sort"
+    :sortBy="state.sortBy"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
+    @onSortClick="onSortClick"
   />
 </template>
