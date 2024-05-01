@@ -1,24 +1,34 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 
+type Header = {
+  name: string
+  label: string
+  allowSort: boolean
+}
+
 interface Props {
   title: string
-  headers: string[]
+  headers: Array<Header>
   dataRows: Array<Array<string | number>>
   from: number
   to: number
   total: number
   pageSize: number
+  sortBy: string
+  sort: 'asc' | 'desc'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
-  headers: () => [],
-  dataRows: () => [],
+  headers: () => [] as Array<Header>,
+  dataRows: () => [] as Array<Array<string | number>>,
   from: 0,
   to: 0,
   total: 0,
-  pageSize: 0
+  pageSize: 0,
+  sortBy: '',
+  sort: 'asc'
 })
 
 defineEmits<{
@@ -27,6 +37,7 @@ defineEmits<{
   (e: 'onPreviousClick'): void
   (e: 'onNextClick'): void
   (e: 'onPageClick', page: number): void
+  (e: 'onSortClick', field: string, sort: 'asc' | 'desc'): void
 }>()
 
 const currentStart = computed((): number => {
@@ -62,7 +73,33 @@ const getPaginationList = computed((): Array<number> => {
       <table class="table">
         <thead>
           <tr>
-            <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+            <th
+              v-for="(header, index) in headers"
+              :key="index"
+              @click="
+                header.allowSort
+                  ? $emit(
+                      'onSortClick',
+                      header.name,
+                      sortBy == header.name ? (sort == 'desc' ? 'asc' : 'desc') : 'asc'
+                    )
+                  : {}
+              "
+            >
+              <div class="d-flex align-items-center">
+                <span>
+                  {{ header.label }}
+                </span>
+                <span class="sort-icon d-flex align-items-center" v-if="header.name === sortBy">
+                  <i
+                    :class="[
+                      'bx',
+                      { 'bx-chevron-down': sort === 'asc', 'bx-chevron-up': sort === 'desc' }
+                    ]"
+                  ></i>
+                </span>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
@@ -141,5 +178,9 @@ const getPaginationList = computed((): Array<number> => {
 .disabled > i {
   color: #ebd3f0;
   cursor: auto;
+}
+
+.sort-icon {
+  margin-left: 0.25rem;
 }
 </style>
