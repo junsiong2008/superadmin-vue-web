@@ -86,7 +86,7 @@ const getPaginationList = computed((): Array<number> => {
                   : {}
               "
             >
-              <div class="d-flex align-items-center">
+              <div :class="['d-flex', 'align-items-center', { sortable: header.allowSort }]">
                 <span>
                   {{ header.label }}
                 </span>
@@ -182,5 +182,9 @@ const getPaginationList = computed((): Array<number> => {
 
 .sort-icon {
   margin-left: 0.25rem;
+}
+
+.sortable {
+  cursor: pointer;
 }
 </style>
