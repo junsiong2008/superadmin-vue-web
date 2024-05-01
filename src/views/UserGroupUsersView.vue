@@ -79,9 +79,10 @@ const loadData = () => {
             'user_id',
             'user_email',
             'user_phone',
-            'voltage',
             'is_operator',
-            'user_group_name'
+            'is_admin',
+            'user_group_name',
+            'is_removed'
           ]
         }).then((result: any) => {
           state.value.idRows = result.id
@@ -143,9 +144,10 @@ onUnmounted(() => {
       'User Id',
       'User Email',
       'User Phone',
-      'Voltage',
       'Is Operator',
-      'User Group Name'
+      'Is Admin',
+      'User Group Name',
+      'Is Removed'
     ]"
     :dataRows="state.dataRows"
     :from="state.from"
