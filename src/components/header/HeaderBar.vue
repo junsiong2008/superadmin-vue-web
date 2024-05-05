@@ -4,6 +4,10 @@ import { useAuthenticationStore } from '@/stores/authentication'
 import router from '@/router'
 import { storeToRefs } from 'pinia'
 import SearchBar from '../search/SearchBar.vue'
+import { useRoute, type RouteRecordName } from 'vue-router'
+import { computed, watch } from 'vue'
+
+const route = useRoute()
 
 const viewStore = useViewStore()
 const authStore = useAuthenticationStore()
@@ -28,6 +32,15 @@ const onLogoutClick = () => {
       hideSpinnerOverlay()
     })
 }
+
+watch(
+  (): RouteRecordName | null | undefined => route.name,
+  () => {
+    console.log(route.name)
+  }
+)
+
+const showSearchBar = computed(() => route.name === 'Charge Point Locations')
 </script>
 
 <template>
@@ -38,7 +51,8 @@ const onLogoutClick = () => {
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
       <div class="navbar-nav align-items-center">
         <div class="nav-item d-flex align-items-center">
-          <SearchBar />
+          <SearchBar v-if="showSearchBar" />
+          <span v-else>{{ headerTitle }}</span>
         </div>
       </div>
       <ul class="navbar-nav flex-row align-items-center ms-auto">
