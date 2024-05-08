@@ -40,7 +40,17 @@ watch(
   }
 )
 
-const showSearchBar = computed(() => route.name === 'Charge Point Locations')
+const showSearchBar = computed(() =>
+  [
+    'Charge Point Locations',
+    'Charge Points',
+    'Charge Point Ports',
+    'Charge Point Port Prices',
+    'User Groups',
+    'User Group Users',
+    'Users'
+  ].includes(route.name!.toString())
+)
 </script>
 
 <template>
