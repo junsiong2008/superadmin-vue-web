@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
-
+import { useRoute, useRouter } from 'vue-router'
 import { useViewStore } from '@/stores/view'
 import { useChargePointStore } from '@/stores/chargePoint'
 import { useTableStore } from '@/stores/table'
@@ -91,6 +91,8 @@ const { decodeToRows } = tableStore
 const { searchQuery } = storeToRefs(searchStore)
 const { resetSearchQuery } = searchStore
 
+const router = useRouter()
+
 watch(searchQuery, async (newValue: string): Promise<void> => {
   state.value.page = 1
   state.value.query = newValue
@@ -161,6 +163,14 @@ const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
   state.value.page = 1
 }
 
+const onRowClick = (index: number): void => {
+  router.push({
+    name: 'Charge Point Detail',
+    params: {
+      chargePointId: state.value.idRows[index]
+    }
+  })
+}
 onMounted(() => {
   changeHeaderTitle('Charge Points')
   loadData()
@@ -188,5 +198,6 @@ onUnmounted(() => {
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
+    @onRowClick="onRowClick"
   />
 </template>

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import { useRoute, type RouteRecordName } from 'vue-router'
+import { computed, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useViewStore } from '@/stores/view'
 import { useAuthenticationStore } from '@/stores/authentication'
 import router from '@/router'
-import { storeToRefs } from 'pinia'
 import SearchBar from '../search/SearchBar.vue'
-import { useRoute, type RouteRecordName } from 'vue-router'
-import { computed, watch } from 'vue'
 
 const route = useRoute()
 

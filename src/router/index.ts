@@ -3,14 +3,16 @@ import { useAuthenticationStore } from '@/stores/authentication'
 
 import AuthLayout from '@/views/layouts/AuthLayout.vue'
 import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
-import LoginView from '@/views/LoginView.vue'
-import ChargePointsView from '@/views/ChargePointsView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+import ChargePointsView from '@/views/dashboard/ChargePointsView.vue'
 import ChargePointLocationsView from '@/views/ChargePointLocationsView.vue'
-import ChargePointPortsView from '@/views/ChargePointPortsView.vue'
-import UserGroupsView from '@/views/UserGroupsView.vue'
-import UsersView from '@/views/UsersView.vue'
-import ChargePointPortPricesView from '@/views/ChargePointPortPricesView.vue'
-import UserGroupUsersView from '@/views/UserGroupUsersView.vue'
+import ChargePointPortsView from '@/views/dashboard/ChargePointPortsView.vue'
+import UserGroupsView from '@/views/dashboard/UserGroupsView.vue'
+import UsersView from '@/views/dashboard/UsersView.vue'
+import ChargePointPortPricesView from '@/views/dashboard/ChargePointPortPricesView.vue'
+import UserGroupUsersView from '@/views/dashboard/UserGroupUsersView.vue'
+import ChargePointLocationDetailView from '@/views/dashboard/ChargePointLocationDetailView.vue'
+import ChargePointDetailView from '@/views/dashboard/ChargePointDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,9 +33,19 @@ const router = createRouter({
           component: ChargePointLocationsView
         },
         {
+          path: 'site/:chargePointLocationId',
+          name: 'Charge Point Location Detail',
+          component: ChargePointLocationDetailView
+        },
+        {
           path: 'charge-points',
           name: 'Charge Points',
           component: ChargePointsView
+        },
+        {
+          path: 'charge-points/:chargePointId',
+          name: 'Charge Point Detail',
+          component: ChargePointDetailView
         },
         {
           path: 'connectors',
