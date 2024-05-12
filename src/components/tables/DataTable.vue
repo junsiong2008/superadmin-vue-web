@@ -38,6 +38,7 @@ defineEmits<{
   (e: 'onNextClick'): void
   (e: 'onPageClick', page: number): void
   (e: 'onSortClick', field: string, sort: 'asc' | 'desc'): void
+  (e: 'onRowClick', index: number): void
 }>()
 
 const currentStart = computed((): number => {
@@ -103,7 +104,12 @@ const getPaginationList = computed((): Array<number> => {
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
-          <tr v-for="(row, index) in dataRows" :key="index">
+          <tr
+            class="clickable"
+            v-for="(row, index) in dataRows"
+            :key="index"
+            @click="$emit('onRowClick', index)"
+          >
             <td v-for="(field, i) in row" :key="i">{{ field }}</td>
           </tr>
         </tbody>
@@ -185,6 +191,11 @@ const getPaginationList = computed((): Array<number> => {
 }
 
 .sortable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: rgba(67, 89, 113, 0.04);
   cursor: pointer;
 }
 </style>
