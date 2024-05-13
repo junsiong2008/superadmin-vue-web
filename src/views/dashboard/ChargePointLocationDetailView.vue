@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import ChargePointLocationDetailCard from '@/components/cards/ChargePointLocationDetailCard.vue'
-import { useChargePointLocationStore } from '@/stores/chargePointLocation'
-import { useViewStore } from '@/stores/view'
 import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 import { useRoute } from 'vue-router'
+import ChargePointLocationDetailCard from '@/components/cards/ChargePointLocationDetailCard.vue'
+import { useChargePointLocationStore } from '@/stores/chargePointLocation'
+import { useViewStore } from '@/stores/view'
 
 type ChargePointLocationDetailData = {
   id: number

@@ -163,6 +163,7 @@ onUnmounted(() => {
     :total="state.total"
     :sort="state.sort"
     :sortBy="state.sortBy"
+    :clickable="false"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
