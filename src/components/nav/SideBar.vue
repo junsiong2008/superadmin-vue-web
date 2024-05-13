@@ -10,23 +10,27 @@ type NavItem = {
   label: string
   icon: string
   routeName: string
+  subRouteName?: string
 }
 
 const navItems: Ref<NavItem[]> = ref([
   {
     label: 'Sites',
     icon: 'bx bx-sitemap',
-    routeName: 'Charge Point Locations'
+    routeName: 'Charge Point Locations',
+    subRouteName: 'Charge Point Location Detail'
   },
   {
     label: 'Charge Points',
     icon: 'bx bx-network-chart',
-    routeName: 'Charge Points'
+    routeName: 'Charge Points',
+    subRouteName: 'Charge Point Detail'
   },
   {
     label: 'Connectors',
     icon: 'bx bx-plug',
-    routeName: 'Charge Point Ports'
+    routeName: 'Charge Point Ports',
+    subRouteName: 'ChargePointPortDetailView'
   },
   {
     label: 'Connector Prices',
@@ -36,17 +40,20 @@ const navItems: Ref<NavItem[]> = ref([
   {
     label: 'User Groups',
     icon: 'bx bx-group',
-    routeName: 'User Groups'
+    routeName: 'User Groups',
+    subRouteName: 'User Group Detail'
   },
   {
     label: 'User Group Users',
     icon: 'bx bx-user-pin',
-    routeName: 'User Group Users'
+    routeName: 'User Group Users',
+    subRouteName: 'User Group User Detail'
   },
   {
     label: 'Users',
     icon: 'bx bx-user',
-    routeName: 'Users'
+    routeName: 'Users',
+    subRouteName: 'User Detail'
   }
 ])
 
@@ -62,7 +69,9 @@ const onNavItemClick = (index: number): void => {
 }
 
 onMounted(() => {
-  const routeIndex = navItems.value.findIndex((e: NavItem) => e.routeName === route.name)
+  const routeIndex = navItems.value.findIndex(
+    (e: NavItem) => e.routeName === route.name || e.subRouteName === route.name
+  )
   activeIndex.value = routeIndex !== -1 ? routeIndex : 0
 })
 </script>
