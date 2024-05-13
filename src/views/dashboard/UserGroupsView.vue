@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-
 import { useViewStore } from '@/stores/view'
 import { useUserGroupStore } from '@/stores/userGroup'
 import { useTableStore } from '@/stores/table'
@@ -82,6 +82,8 @@ const { decodeToRows } = tableStore
 const { searchQuery } = storeToRefs(searchStore)
 const { resetSearchQuery } = searchStore
 
+const router = useRouter()
+
 watch(searchQuery, async (newValue: string): Promise<void> => {
   state.value.page = 1
   state.value.query = newValue
@@ -152,6 +154,15 @@ const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
   state.value.page = 1
 }
 
+const onRowClick = (index: number): void => {
+  router.push({
+    name: 'User Group Detail',
+    params: {
+      userGroupId: state.value.idRows[index]
+    }
+  })
+}
+
 onMounted(() => {
   changeHeaderTitle('User Groups')
   loadData()
@@ -172,11 +183,13 @@ onUnmounted(() => {
     :total="state.total"
     :sort="state.sort"
     :sortBy="state.sortBy"
+    :clickable="true"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
+    @onRowClick="onRowClick"
   />
 </template>

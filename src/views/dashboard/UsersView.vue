@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-
 import { useViewStore } from '@/stores/view'
 import { useUserStore } from '@/stores/user'
 import { useTableStore } from '@/stores/table'
@@ -102,6 +102,8 @@ watch([() => state.value.page, () => state.value.sort, () => state.value.sortBy]
   loadData()
 })
 
+const router = useRouter()
+
 const totalPage = computed((): number => {
   return state.value.total != 0 ? Math.ceil(state.value.total / state.value.pageSize) : 0
 })
@@ -181,6 +183,14 @@ const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
   state.value.page = 1
 }
 
+const onRowClick = (index: number): void => {
+  router.push({
+    name: 'User Detail',
+    params: {
+      userId: state.value.idRows[index]
+    }
+  })
+}
 onMounted(() => {
   changeHeaderTitle('Users')
   loadData()
@@ -201,11 +211,13 @@ onUnmounted(() => {
     :total="state.total"
     :sort="state.sort"
     :sortBy="state.sortBy"
+    :clickable="true"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
+    @onRowClick="onRowClick"
   />
 </template>

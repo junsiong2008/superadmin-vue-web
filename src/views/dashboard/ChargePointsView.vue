@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useViewStore } from '@/stores/view'
 import { useChargePointStore } from '@/stores/chargePoint'
 import { useTableStore } from '@/stores/table'
@@ -192,6 +192,7 @@ onUnmounted(() => {
     :total="state.total"
     :sort="state.sort"
     :sortBy="state.sortBy"
+    :clickable="true"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
