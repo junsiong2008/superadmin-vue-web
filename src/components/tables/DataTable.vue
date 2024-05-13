@@ -17,6 +17,7 @@ interface Props {
   pageSize: number
   sortBy: string
   sort: 'asc' | 'desc'
+  clickable: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,7 +29,8 @@ const props = withDefaults(defineProps<Props>(), {
   total: 0,
   pageSize: 0,
   sortBy: '',
-  sort: 'asc'
+  sort: 'asc',
+  clickable: true
 })
 
 defineEmits<{
@@ -105,7 +107,7 @@ const getPaginationList = computed((): Array<number> => {
         </thead>
         <tbody class="table-border-bottom-0">
           <tr
-            class="clickable"
+            :class="{ clickable: clickable }"
             v-for="(row, index) in dataRows"
             :key="index"
             @click="$emit('onRowClick', index)"
