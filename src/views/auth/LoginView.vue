@@ -98,7 +98,7 @@ const onLoginClick = (): void => {
         />
       </div>
       <div class="mb-3">
-        <InputButton @click="onLoginClick" label="Login" />
+        <InputButton @click="onLoginClick" label="Login" :isLong="true" />
       </div>
     </form>
   </AuthCard>
