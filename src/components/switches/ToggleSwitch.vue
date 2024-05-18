@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import type { Ref } from 'vue'
-
 defineProps({
   label: {
     type: String,
