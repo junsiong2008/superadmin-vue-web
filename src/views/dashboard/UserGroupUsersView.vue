@@ -7,8 +7,12 @@ import { useViewStore } from '@/stores/view'
 import { useUserGroupUserStore } from '@/stores/userGroupUser'
 import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
+import { useUserGroupStore } from '@/stores/userGroup'
+import { useUserStore } from '@/stores/user'
 
 import DataTable from '@/components/tables/DataTable.vue'
+import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
+import AddUserGroupUserModal from '@/components/modals/AddUserGroupUserModal.vue'
 
 type Header = {
   name: string
@@ -28,6 +32,22 @@ type UserGroupUserViewState = {
   sortBy: string
   sort: 'asc' | 'desc'
 }
+
+const addUserGroupUserModalVisible: Ref<boolean> = ref(false)
+
+const userGroupModalOptions: Ref<
+  Array<{
+    key: number | string
+    label: string
+  }>
+> = ref([])
+
+const userModalOptions: Ref<
+  Array<{
+    key: number | string
+    label: string
+  }>
+> = ref([])
 
 const state: Ref<UserGroupUserViewState> = ref({
   idRows: [],
@@ -94,6 +114,8 @@ const viewStore = useViewStore()
 const userGroupUserStore = useUserGroupUserStore()
 const tableStore = useTableStore()
 const searchStore = useSearchStore()
+const userGroupStore = useUserGroupStore()
+const userStore = useUserStore()
 
 const { changeHeaderTitle } = viewStore
 const { getAll } = userGroupUserStore
@@ -144,6 +166,54 @@ const loadData = () => {
     })
 }
 
+const loadUserGroupData = () => {
+  userGroupStore
+    .getAll({
+      query: `page=1&page_size=100`
+    })
+    .then((response: any) => {
+      if (response.data.data.user_groups) {
+        let tmpUserGroupOptions: Array<{
+          key: number | string
+          label: string
+        }> = []
+
+        for (let i = 0; i < response.data.data.user_groups.length; i++) {
+          tmpUserGroupOptions.push({
+            key: response.data.data.user_groups[i].id,
+            label: response.data.data.user_groups[i].name
+          })
+        }
+
+        userGroupModalOptions.value = tmpUserGroupOptions
+      }
+    })
+}
+
+const loadUserData = () => {
+  userStore
+    .getAll({
+      query: `page=1&page_size=100`
+    })
+    .then((response: any) => {
+      if (response.data.data.users) {
+        let tmpUserOptions: Array<{
+          key: number | string
+          label: string
+        }> = []
+
+        for (let i = 0; i < response.data.data.users.length; i++) {
+          tmpUserOptions.push({
+            key: response.data.data.users[i].id,
+            label: response.data.data.users[i].name
+          })
+        }
+
+        userModalOptions.value = tmpUserOptions
+      }
+    })
+}
+
 const onFirstClick = (): void => {
   state.value.page = 1
 }
@@ -183,9 +253,22 @@ const onRowClick = (index: number): void => {
   })
 }
 
+const onFloatingSubButtonClick = (id: number) => {
+  if (id === 0) {
+    addUserGroupUserModalVisible.value = true
+  }
+}
+
+const onAddUserGroupUserModalClose = () => {
+  addUserGroupUserModalVisible.value = false
+  loadData()
+}
+
 onMounted(() => {
   changeHeaderTitle('User Group Users')
   loadData()
+  loadUserGroupData()
+  loadUserData()
 })
 
 onUnmounted(() => {
@@ -212,5 +295,26 @@ onUnmounted(() => {
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
     @onRowClick="onRowClick"
+  />
+
+  <InputFloatingButton
+    icon="bx bx-plus"
+    type="progress"
+    :subButtons="[
+      {
+        icon: 'bx bx-user-pin',
+        color: '#1d885a',
+        text: 'Add User Group User'
+      }
+    ]"
+    @onSubClick="onFloatingSubButtonClick"
+  />
+
+  <AddUserGroupUserModal
+    v-if="addUserGroupUserModalVisible"
+    :visible="addUserGroupUserModalVisible"
+    :userGroupOptions="userGroupModalOptions"
+    :userOptions="userModalOptions"
+    @onClose="onAddUserGroupUserModalClose"
   />
 </template>

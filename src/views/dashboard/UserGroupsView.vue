@@ -9,6 +9,8 @@ import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
+import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
+import AddUserGroupModal from '@/components/modals/AddUserGroupModal.vue'
 
 type Header = {
   name: string
@@ -69,6 +71,8 @@ const headers: Array<Header> = [
     allowSort: false
   }
 ]
+
+const addUserGroupModalVisible: Ref<boolean> = ref(false)
 
 const viewStore = useViewStore()
 const userGroupStore = useUserGroupStore()
@@ -163,6 +167,17 @@ const onRowClick = (index: number): void => {
   })
 }
 
+const onFloatingSubButtonClick = (id: number) => {
+  if (id === 0) {
+    addUserGroupModalVisible.value = true
+  }
+}
+
+const onAddUserGroupModalClose = () => {
+  addUserGroupModalVisible.value = false
+  loadData()
+}
+
 onMounted(() => {
   changeHeaderTitle('User Groups')
   loadData()
@@ -191,5 +206,24 @@ onUnmounted(() => {
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
     @onRowClick="onRowClick"
+  />
+
+  <InputFloatingButton
+    icon="bx bx-plus"
+    type="progress"
+    :subButtons="[
+      {
+        icon: 'bx bx-network-chart',
+        color: '#1d885a',
+        text: 'Add User Group'
+      }
+    ]"
+    @onSubClick="onFloatingSubButtonClick"
+  />
+
+  <AddUserGroupModal
+    v-if="addUserGroupModalVisible"
+    :visible="addUserGroupModalVisible"
+    @onClose="onAddUserGroupModalClose"
   />
 </template>

@@ -7,7 +7,11 @@ import { useViewStore } from '@/stores/view'
 import { useChargePointPortStore } from '@/stores/chargePointPort'
 import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
+import { useChargePointStore } from '@/stores/chargePoint'
+
 import DataTable from '@/components/tables/DataTable.vue'
+import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
+import AddChargePointPortModal from '@/components/modals/AddChargePointPortModal.vue'
 
 type Header = {
   name: string
@@ -89,10 +93,20 @@ const headers: Array<Header> = [
   }
 ]
 
+const addChargePointPortModalVisible: Ref<boolean> = ref(false)
+
+const chargePointModalOptions: Ref<
+  Array<{
+    key: number | string
+    label: string
+  }>
+> = ref([])
+
 const viewStore = useViewStore()
 const chargePointPortStore = useChargePointPortStore()
 const tableStore = useTableStore()
 const searchStore = useSearchStore()
+const chargePointStore = useChargePointStore()
 
 const { changeHeaderTitle } = viewStore
 const { getAll } = chargePointPortStore
@@ -143,6 +157,30 @@ const loadData = () => {
     })
 }
 
+const loadChargePointData = () => {
+  chargePointStore
+    .getAll({
+      query: `page=1&page_size=100`
+    })
+    .then((response: any) => {
+      if (response.data.data.charge_points) {
+        let tmpChargePointOptions: Array<{
+          key: number | string
+          label: string
+        }> = []
+
+        for (let i = 0; i < response.data.data.charge_points.length; i++) {
+          tmpChargePointOptions.push({
+            key: response.data.data.charge_points[i].id,
+            label: response.data.data.charge_points[i].name
+          })
+        }
+
+        chargePointModalOptions.value = tmpChargePointOptions
+      }
+    })
+}
+
 const onFirstClick = (): void => {
   state.value.page = 1
 }
@@ -182,9 +220,21 @@ const onRowClick = (index: number): void => {
   })
 }
 
+const onFloatingSubButtonClick = (id: number) => {
+  if (id === 0) {
+    addChargePointPortModalVisible.value = true
+  }
+}
+
+const onAddChargePointPortModalClose = () => {
+  addChargePointPortModalVisible.value = false
+  loadData()
+}
+
 onMounted(() => {
   changeHeaderTitle('Connectors')
   loadData()
+  loadChargePointData()
 })
 
 onUnmounted(() => {
@@ -210,5 +260,25 @@ onUnmounted(() => {
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
     @onRowClick="onRowClick"
+  />
+
+  <InputFloatingButton
+    icon="bx bx-plus"
+    type="progress"
+    :subButtons="[
+      {
+        icon: 'bx bx-plug',
+        color: '#1d885a',
+        text: 'Add Charge Point Port'
+      }
+    ]"
+    @onSubClick="onFloatingSubButtonClick"
+  />
+
+  <AddChargePointPortModal
+    v-if="addChargePointPortModalVisible"
+    :visible="addChargePointPortModalVisible"
+    :chargePointOptions="chargePointModalOptions"
+    @onClose="onAddChargePointPortModalClose"
   />
 </template>

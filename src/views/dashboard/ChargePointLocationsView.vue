@@ -8,8 +8,11 @@ import { useChargePointLocationStore } from '@/stores/chargePointLocation'
 import { useViewStore } from '@/stores/view'
 import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
+import { useUserGroupStore } from '@/stores/userGroup'
 
 import DataTable from '@/components/tables/DataTable.vue'
+import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
+import AddChargePointLocationModal from '@/components/modals/AddChargePointLocationModal.vue'
 
 type Header = {
   name: string
@@ -42,6 +45,15 @@ const state: Ref<ChargePointLocationViewState> = ref({
   sortBy: 'name',
   sort: 'asc'
 })
+
+const addChargePointLocationModalVisible: Ref<boolean> = ref(false)
+
+const userGroupModalOptions: Ref<
+  Array<{
+    key: number | string
+    label: string
+  }>
+> = ref([])
 
 const headers: Array<Header> = [
   {
@@ -80,6 +92,7 @@ const viewStore = useViewStore()
 const chargePointLocationStore = useChargePointLocationStore()
 const tableStore = useTableStore()
 const searchStore = useSearchStore()
+const userGroupStore = useUserGroupStore()
 
 const { changeHeaderTitle } = viewStore
 const { getAll } = chargePointLocationStore
@@ -130,6 +143,30 @@ const loadData = () => {
     })
 }
 
+const loadUserGroupData = () => {
+  userGroupStore
+    .getAll({
+      query: `page=1&page_size=100`
+    })
+    .then((response: any) => {
+      if (response.data.data.user_groups) {
+        let tmpUserGroupModalOptions: Array<{
+          key: number | string
+          label: string
+        }> = []
+
+        for (let i = 0; i < response.data.data.user_groups.length; i++) {
+          tmpUserGroupModalOptions.push({
+            key: response.data.data.user_groups[i].id,
+            label: response.data.data.user_groups[i].name
+          })
+        }
+
+        userGroupModalOptions.value = tmpUserGroupModalOptions
+      }
+    })
+}
+
 const onFirstClick = (): void => {
   state.value.page = 1
 }
@@ -169,9 +206,21 @@ const onRowClick = (index: number): void => {
   })
 }
 
+const onFloatingSubButtonClick = (id: number) => {
+  if (id === 0) {
+    addChargePointLocationModalVisible.value = true
+  }
+}
+
+const onAddChargePointLocationModalClose = () => {
+  addChargePointLocationModalVisible.value = false
+  loadData()
+}
+
 onMounted(() => {
   changeHeaderTitle('Sites')
   loadData()
+  loadUserGroupData()
 })
 
 onUnmounted(() => {
@@ -180,6 +229,7 @@ onUnmounted(() => {
 </script>
 <template>
   <DataTable
+    :clickable="true"
     title="Charge Point Locations"
     :headers="headers"
     :dataRows="state.dataRows"
@@ -196,5 +246,25 @@ onUnmounted(() => {
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
     @onRowClick="onRowClick"
+  />
+
+  <InputFloatingButton
+    icon="bx bx-plus"
+    type="progress"
+    :subButtons="[
+      {
+        icon: 'bx bx-sitemap',
+        color: '#1d885a',
+        text: 'Add Site'
+      }
+    ]"
+    @onSubClick="onFloatingSubButtonClick"
+  />
+
+  <AddChargePointLocationModal
+    v-if="addChargePointLocationModalVisible"
+    :visible="addChargePointLocationModalVisible"
+    :userGroupOptions="userGroupModalOptions"
+    @onClose="onAddChargePointLocationModalClose"
   />
 </template>

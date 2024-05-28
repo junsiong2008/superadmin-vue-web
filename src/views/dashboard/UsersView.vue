@@ -9,6 +9,8 @@ import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
+import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
+import AddUserModal from '@/components/modals/AddUserModal.vue'
 
 type Header = {
   name: string
@@ -28,6 +30,8 @@ type UserViewState = {
   sortBy: string
   sort: 'asc' | 'desc'
 }
+
+const addUserModalVisible: Ref<boolean> = ref(false)
 
 const state: Ref<UserViewState> = ref({
   idRows: [],
@@ -191,6 +195,18 @@ const onRowClick = (index: number): void => {
     }
   })
 }
+
+const onFloatingSubButtonClick = (id: number) => {
+  if (id === 0) {
+    addUserModalVisible.value = true
+  }
+}
+
+const onAddUserModalClose = () => {
+  addUserModalVisible.value = false
+  loadData()
+}
+
 onMounted(() => {
   changeHeaderTitle('Users')
   loadData()
@@ -219,5 +235,24 @@ onUnmounted(() => {
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
     @onRowClick="onRowClick"
+  />
+
+  <InputFloatingButton
+    icon="bx bx-plus"
+    type="progress"
+    :subButtons="[
+      {
+        icon: 'bx bx-user',
+        color: '#1d885a',
+        text: 'Add User'
+      }
+    ]"
+    @onSubClick="onFloatingSubButtonClick"
+  />
+
+  <AddUserModal
+    v-if="addUserModalVisible"
+    :visible="addUserModalVisible"
+    @onClose="onAddUserModalClose"
   />
 </template>

@@ -7,8 +7,11 @@ import { useViewStore } from '@/stores/view'
 import { useChargePointStore } from '@/stores/chargePoint'
 import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
+import { useChargePointLocationStore } from '@/stores/chargePointLocation'
 
 import DataTable from '@/components/tables/DataTable.vue'
+import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
+import AddChargePointModal from '@/components/modals/AddChargePointModal.vue'
 
 type Header = {
   name: string
@@ -28,6 +31,15 @@ type ChargePointViewState = {
   sortBy: string
   sort: 'asc' | 'desc'
 }
+
+const addChargePointModalVisible: Ref<boolean> = ref(false)
+
+const chargePointLocationModalOptions: Ref<
+  Array<{
+    key: number | string
+    label: string
+  }>
+> = ref([])
 
 const state: Ref<ChargePointViewState> = ref({
   idRows: [],
@@ -83,6 +95,7 @@ const viewStore = useViewStore()
 const chargePointStore = useChargePointStore()
 const tableStore = useTableStore()
 const searchStore = useSearchStore()
+const chargePointLocationStore = useChargePointLocationStore()
 
 const { changeHeaderTitle } = viewStore
 const { getAll } = chargePointStore
@@ -133,6 +146,30 @@ const loadData = () => {
     })
 }
 
+const loadChargePointLocationData = () => {
+  chargePointLocationStore
+    .getAll({
+      query: `page=1&page_size=100`
+    })
+    .then((response: any) => {
+      if (response.data.data.charge_point_locations) {
+        let tmpChargePointLocationOptions: Array<{
+          key: number | string
+          label: string
+        }> = []
+
+        for (let i = 0; i < response.data.data.charge_point_locations.length; i++) {
+          tmpChargePointLocationOptions.push({
+            key: response.data.data.charge_point_locations[i].id,
+            label: response.data.data.charge_point_locations[i].name
+          })
+        }
+
+        chargePointLocationModalOptions.value = tmpChargePointLocationOptions
+      }
+    })
+}
+
 const onFirstClick = (): void => {
   state.value.page = 1
 }
@@ -171,9 +208,22 @@ const onRowClick = (index: number): void => {
     }
   })
 }
+
+const onFloatingSubButtonClick = (id: number) => {
+  if (id === 0) {
+    addChargePointModalVisible.value = true
+  }
+}
+
+const onAddChargePointModalClose = () => {
+  addChargePointModalVisible.value = false
+  loadData()
+}
+
 onMounted(() => {
   changeHeaderTitle('Charge Points')
   loadData()
+  loadChargePointLocationData()
 })
 
 onUnmounted(() => {
@@ -200,5 +250,25 @@ onUnmounted(() => {
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
     @onRowClick="onRowClick"
+  />
+
+  <InputFloatingButton
+    icon="bx bx-plus"
+    type="progress"
+    :subButtons="[
+      {
+        icon: 'bx bx-network-chart',
+        color: '#1d885a',
+        text: 'Add Charge Point'
+      }
+    ]"
+    @onSubClick="onFloatingSubButtonClick"
+  />
+
+  <AddChargePointModal
+    v-if="addChargePointModalVisible"
+    :visible="addChargePointModalVisible"
+    :chargePointLocationOptions="chargePointLocationModalOptions"
+    @onClose="onAddChargePointModalClose"
   />
 </template>

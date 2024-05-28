@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import { onMounted, onUnmounted, type PropType } from 'vue'
 
 defineProps({
   label: {
@@ -21,6 +21,14 @@ defineProps({
 })
 
 const value = defineModel()
+
+onMounted(() => {
+  console.log('input mounted')
+})
+
+onUnmounted(() => {
+  console.log('input unmounted')
+})
 </script>
 
 <template>
