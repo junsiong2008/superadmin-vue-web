@@ -108,9 +108,6 @@ const onOkClick = () => {
           chargePoint.value.vendorError = error.response.data.errors.vendor
         }
         if (error.response.data.errors.firmware_version) {
-          error.response.data.errors.firmware_version
-        }
-        if (error.response.data.errors.firmware_version) {
           chargePoint.value.firmwareVersionError = error.response.data.errors.firmware_version
         }
         if (error.response.data.errors.charge_point_location_id) {
