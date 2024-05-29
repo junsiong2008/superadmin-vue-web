@@ -30,7 +30,7 @@ const navItems: Ref<NavItem[]> = ref([
     label: 'Connectors',
     icon: 'bx bx-plug',
     routeName: 'Charge Point Ports',
-    subRouteName: 'ChargePointPortDetailView'
+    subRouteName: 'Charge Point Port Detail'
   },
   {
     label: 'Connector Prices',
