@@ -73,7 +73,7 @@ const onOkClick = () => {
         }
       }
       viewStore.hideSpinnerOverlay()
-      viewStore.changeToastLabel('Failed to add new user. Please try again.')
+      viewStore.changeToastLabel('Failed to add new user group. Please try again.')
       viewStore.showToast()
     })
 }
