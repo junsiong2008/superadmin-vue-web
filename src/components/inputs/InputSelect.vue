@@ -6,6 +6,10 @@ type Option = {
   label: string
 }
 const props = defineProps({
+  defaultValue: {
+    type: Number,
+    default: 0
+  },
   label: {
     type: String,
     default: ''
@@ -33,7 +37,7 @@ watch(selected, () => {
 <template>
   <label class="form-label">{{ label }}</label>
   <select :class="['form-select', 'form-control', error ? 'is-invalid' : '']" v-model="selected">
-    <option disabled value="0">Please select one</option>
+    <option v-if="defaultValue === 0" disabled value="0">Please select one</option>
     <option v-for="(item, index) in options" :key="index" :value="item.key">
       {{ item.label }}
     </option>
