@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { useViewStore } from '@/stores/view'
 import { useChargePointStore } from '@/stores/chargePoint'
 import ChargePointDetailCard from '@/components/cards/ChargePointDetailCard.vue'
+import EditChargePointModal from '@/components/modals/EditChargePointModal.vue'
 
 type ChargePointDetailData = {
   id: number
@@ -32,6 +33,7 @@ const data: Ref<ChargePointDetailData> = ref({
   chargePointLocationId: 0
 })
 
+const editChargePointModalVisible: Ref<boolean> = ref(false)
 const route = useRoute()
 
 const viewStore = useViewStore()
@@ -58,6 +60,14 @@ const loadChargePointData = () => {
       console.error(error)
     })
 }
+const onEditChargePointModalClose = () => {
+  editChargePointModalVisible.value = false
+  loadChargePointData()
+}
+
+const onEditButtonClick = () => {
+  editChargePointModalVisible.value = true
+}
 
 onMounted(() => {
   changeHeaderTitle('Charge Point Detail')
@@ -79,7 +89,20 @@ onMounted(() => {
         :model="data.model"
         :firmwareVersion="data.firmwareVersion"
         :chargePointLocationId="data.chargePointLocationId"
+        @onEditClick="onEditButtonClick"
       />
     </div>
   </div>
+  <EditChargePointModal
+    v-if="editChargePointModalVisible"
+    :id="data.id"
+    :name="data.name"
+    :description="data.description"
+    :serialNumber="data.serialNumber"
+    :model="data.model"
+    :vendor="data.vendor"
+    :firmwareVersion="data.firmwareVersion"
+    :chargePointLocationId="data.chargePointLocationId"
+    @onClose="onEditChargePointModalClose"
+  />
 </template>

@@ -1,62 +1,103 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
-import { useViewStore } from '@/stores/view'
 import { useUserGroupStore } from '@/stores/userGroup'
+import { useViewStore } from '@/stores/view'
 
 import MainModal from '@/components/modals/MainModal.vue'
 import InputText from '@/components/inputs/InputText.vue'
+import InputSelect from '@/components/inputs/InputSelect.vue'
 
-type AddUserGroupState = {
+type Option = {
+  key: number | string
+  label: string
+}
+
+type EditUserGroupState = {
   name: string
   nameError: string
   email: string
   emailError: string
   phone: string
   phoneError: string
+  isRemoved: string
 }
 
-const userGroup: Ref<AddUserGroupState> = ref({
-  name: '',
-  nameError: '',
-  email: '',
-  emailError: '',
-  phone: '',
-  phoneError: ''
-})
-
-defineProps({
-  visible: {
+const props = defineProps({
+  id: {
+    type: [String, Number],
+    default: '0'
+  },
+  name: {
+    type: String,
+    default: ''
+  },
+  phone: {
+    type: String,
+    default: ''
+  },
+  email: {
+    type: String,
+    default: ''
+  },
+  isRemoved: {
     type: Boolean,
     default: false
   }
 })
 
+const userGroup: Ref<EditUserGroupState> = ref({
+  name: props.name,
+  nameError: '',
+  email: props.email,
+  emailError: '',
+  phone: props.phone,
+  phoneError: '',
+  isRemoved: props.isRemoved.toString()
+})
+
+const isRemovedOptions: Ref<Array<Option>> = ref([
+  {
+    key: 'true',
+    label: 'True'
+  },
+  {
+    key: 'false',
+    label: 'False'
+  }
+])
+
+const viewStore = useViewStore()
+const userGroupStore = useUserGroupStore()
+
 const emit = defineEmits<{
   (e: 'onClose'): void
 }>()
 
-const viewStore = useViewStore()
-const userGroupStore = useUserGroupStore()
+const onIsRemovedSelect = (option: Option) => {
+  userGroup.value.isRemoved = option.key.toString()
+}
 
 const onClose = () => {
   emit('onClose')
 }
 
 const onOkClick = () => {
+  clearError()
   let params: URLSearchParams = new URLSearchParams()
   params.append('name', userGroup.value.name)
   params.append('email', userGroup.value.email)
   params.append('phone', userGroup.value.phone)
-
+  params.append('is_removed', userGroup.value.isRemoved)
   viewStore.showSpinnerOverlay()
 
   userGroupStore
-    .add({
+    .update({
+      path: props.id,
       params: params
     })
     .then((response: any) => {
       viewStore.hideSpinnerOverlay()
-      viewStore.changeToastLabel('A new user group has been added successfully.')
+      viewStore.changeToastLabel('User group has been edited successfully.')
       viewStore.showToast()
       emit('onClose')
     })
@@ -73,16 +114,22 @@ const onOkClick = () => {
         }
       }
       viewStore.hideSpinnerOverlay()
-      viewStore.changeToastLabel('Failed to add new user group. Please try again.')
+      viewStore.changeToastLabel('Failed to edit user group. Please try again.')
       viewStore.showToast()
     })
+}
+
+const clearError = () => {
+  userGroup.value.nameError = ''
+  userGroup.value.emailError = ''
+  userGroup.value.phoneError = ''
 }
 </script>
 
 <template>
   <MainModal
-    :visible="visible"
-    title="Add User Group"
+    :visible="true"
+    title="Edit User Group"
     @onClose="onClose"
     @onOkClick="onOkClick"
     @onCancelClick="onClose"
@@ -114,6 +161,14 @@ const onOkClick = () => {
         type="tel"
         hintText="Enter a phone number"
         :error="userGroup.phoneError"
+      />
+    </div>
+    <div class="mb-3">
+      <InputSelect
+        v-model="userGroup.isRemoved"
+        label="Is Removed"
+        :options="isRemovedOptions"
+        @onSelect="onIsRemovedSelect"
       />
     </div>
   </MainModal>

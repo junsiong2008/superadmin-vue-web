@@ -2,9 +2,10 @@
 import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 import { useRoute } from 'vue-router'
-import ChargePointLocationDetailCard from '@/components/cards/ChargePointLocationDetailCard.vue'
 import { useChargePointLocationStore } from '@/stores/chargePointLocation'
 import { useViewStore } from '@/stores/view'
+import ChargePointLocationDetailCard from '@/components/cards/ChargePointLocationDetailCard.vue'
+import EditChargePointLocationModal from '@/components/modals/EditChargePointLocationModal.vue'
 
 type ChargePointLocationDetailData = {
   id: number
@@ -12,6 +13,7 @@ type ChargePointLocationDetailData = {
   address: string
   latitude: number
   longitude: number
+  description: string
   count: number
   isPrivate: boolean
   userGroupId: number
@@ -24,11 +26,14 @@ const data: Ref<ChargePointLocationDetailData> = ref({
   address: '',
   latitude: 0,
   longitude: 0,
+  description: '',
   count: 0,
   isPrivate: false,
   userGroupId: 0,
   userGroupName: ''
 })
+
+const editChargePointLocationModalVisible: Ref<boolean> = ref(false)
 
 const route = useRoute()
 
@@ -45,6 +50,7 @@ const loadChargePointLocationData = () => {
       data.value.address = response.data.data.address
       data.value.latitude = response.data.data.latitude
       data.value.longitude = response.data.data.longitude
+      data.value.description = response.data.data.description
       data.value.count = response.data.data.count
       data.value.isPrivate = response.data.data.is_private
       data.value.userGroupId = response.data.data.user_group_id
@@ -53,6 +59,15 @@ const loadChargePointLocationData = () => {
     .catch((error: any) => {
       console.error(error)
     })
+}
+
+const onEditChargePointLocationModalClose = () => {
+  editChargePointLocationModalVisible.value = false
+  loadChargePointLocationData()
+}
+
+const onEditButtonClick = () => {
+  editChargePointLocationModalVisible.value = true
 }
 
 onMounted(() => {
@@ -73,7 +88,20 @@ onMounted(() => {
         :isPrivate="data.isPrivate"
         :userGroupId="data.userGroupId"
         :userGroupName="data.userGroupName"
+        @onEditClick="onEditButtonClick"
       />
     </div>
   </div>
+  <EditChargePointLocationModal
+    v-if="editChargePointLocationModalVisible"
+    :id="data.id"
+    :name="data.name"
+    :address="data.address"
+    :latitude="data.latitude"
+    :longitude="data.longitude"
+    :description="data.description"
+    :userGroupId="data.userGroupId"
+    :isPrivate="data.isPrivate"
+    @onClose="onEditChargePointLocationModalClose"
+  />
 </template>

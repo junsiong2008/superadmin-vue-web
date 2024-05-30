@@ -9,6 +9,7 @@ import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
 
 import DataTable from '@/components/tables/DataTable.vue'
+import EditChargePointPortPriceModal from '@/components/modals/EditChargePointPortPriceModal.vue'
 
 type Header = {
   name: string
@@ -59,6 +60,9 @@ const headers: Array<Header> = [
     allowSort: false
   }
 ]
+
+const editChargePointPortPriceModalVisible: Ref<boolean> = ref(false)
+const chargePointPortIdToEdit: Ref<number> = ref(0)
 
 const viewStore = useViewStore()
 const chargePointPortPriceStore = useChargePointPortPriceStore()
@@ -142,6 +146,16 @@ const onSortClick = (field: string, sort: 'asc' | 'desc'): void => {
   state.value.page = 1
 }
 
+const onEditChargePointPortPriceModalClose = () => {
+  editChargePointPortPriceModalVisible.value = false
+  loadData()
+}
+
+const onEditButtonClick = (id: number) => {
+  editChargePointPortPriceModalVisible.value = true
+  chargePointPortIdToEdit.value = id
+}
+
 onMounted(() => {
   changeHeaderTitle('Connector Price')
   loadData()
@@ -164,11 +178,19 @@ onUnmounted(() => {
     :sort="state.sort"
     :sortBy="state.sortBy"
     :clickable="false"
+    :showAction="true"
     @onFirstClick="onFirstClick"
     @onLastClick="onLastClick"
     @onPreviousClick="onPreviousClick"
     @onNextClick="onNextClick"
     @onPageClick="onPageClick"
     @onSortClick="onSortClick"
+    @onEditClick="onEditButtonClick"
+  />
+
+  <EditChargePointPortPriceModal
+    v-if="editChargePointPortPriceModalVisible"
+    :id="chargePointPortIdToEdit"
+    @onClose="onEditChargePointPortPriceModalClose"
   />
 </template>

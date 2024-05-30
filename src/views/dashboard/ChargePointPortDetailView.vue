@@ -5,6 +5,7 @@ import { useViewStore } from '@/stores/view'
 import { useRoute } from 'vue-router'
 import { useChargePointPortStore } from '@/stores/chargePointPort'
 import ChargePointPortDetailCard from '@/components/cards/ChargePointPortDetailCard.vue'
+import EditChargePointPortModal from '@/components/modals/EditChargePointPortModal.vue'
 
 type ChargePointPortDetailData = {
   id: number
@@ -36,6 +37,7 @@ const data: Ref<ChargePointPortDetailData> = ref({
   status: ''
 })
 
+const editChargePointPortModalVisible: Ref<boolean> = ref(false)
 const route = useRoute()
 
 const viewStore = useViewStore()
@@ -63,6 +65,16 @@ const loadChargePointPortData = () => {
       console.error(error)
     })
 }
+
+const onEditChargePointPortModalClose = () => {
+  editChargePointPortModalVisible.value = false
+  loadChargePointPortData()
+}
+
+const onEditButtonClick = () => {
+  editChargePointPortModalVisible.value = true
+}
+
 onMounted(() => {
   changeHeaderTitle('Connector Detail')
   loadChargePointPortData()
@@ -85,7 +97,21 @@ onMounted(() => {
         :type="data.type"
         :voltage="data.voltage"
         :status="data.status"
+        @onEditClick="onEditButtonClick"
       />
     </div>
   </div>
+  <EditChargePointPortModal
+    v-if="editChargePointPortModalVisible"
+    :id="data.id"
+    :connectorId="data.connectorId"
+    :name="data.name"
+    :electricityType="data.electricityType"
+    :type="data.type"
+    :power="data.power"
+    :current="data.current"
+    :voltage="data.voltage"
+    :chargePointId="data.chargePointId"
+    @onClose="onEditChargePointPortModalClose"
+  />
 </template>

@@ -50,12 +50,20 @@ defineProps({
     default: ''
   }
 })
+
+const emit = defineEmits<{
+  (e: 'onEditClick'): void
+}>()
+
+const onEditClick = () => {
+  emit('onEditClick')
+}
 </script>
 <template>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center justify-content-between">
       <h5 class="card-title mb-3">{{ name }}</h5>
-      <i class="edit-icon bx bx-edit"></i>
+      <i class="edit-icon bx bx-edit" @click="onEditClick"></i>
     </div>
     <div class="card-body">
       <ReadonlyInput label="AC/DC" :value="electricityType" />

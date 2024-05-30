@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { useViewStore } from '@/stores/view'
 import { useUserGroupStore } from '@/stores/userGroup'
 import UserGroupDetailCard from '@/components/cards/UserGroupDetailCard.vue'
+import EditUserGroupModal from '@/components/modals/EditUserGroupModal.vue'
 
 type UserGroupDetailData = {
   id: number
@@ -21,6 +22,8 @@ const data: Ref<UserGroupDetailData> = ref({
   email: '',
   isRemoved: false
 })
+
+const editUserGroupModalVisible: Ref<boolean> = ref(false)
 
 const route = useRoute()
 
@@ -39,6 +42,15 @@ const loadUserGroupData = () => {
   })
 }
 
+const onEditUserGroupModalClose = () => {
+  editUserGroupModalVisible.value = false
+  loadUserGroupData()
+}
+
+const onEditButtonClick = () => {
+  editUserGroupModalVisible.value = true
+}
+
 onMounted(() => {
   changeHeaderTitle('User Group Detail')
   loadUserGroupData()
@@ -52,5 +64,15 @@ onMounted(() => {
     :phone="data.phone"
     :email="data.email"
     :isRemoved="data.isRemoved"
+    @onEditClick="onEditButtonClick"
+  />
+  <EditUserGroupModal
+    v-if="editUserGroupModalVisible"
+    :id="data.id"
+    :name="data.name"
+    :phone="data.phone"
+    :email="data.email"
+    :isRemoved="data.isRemoved"
+    @onClose="onEditUserGroupModalClose"
   />
 </template>

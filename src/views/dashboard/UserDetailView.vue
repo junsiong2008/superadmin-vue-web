@@ -5,12 +5,14 @@ import { useRoute } from 'vue-router'
 import { useViewStore } from '@/stores/view'
 import { useUserStore } from '@/stores/user'
 import UserDetailCard from '@/components/cards/UserDetailCard.vue'
+import EditUserModal from '@/components/modals/EditUserModal.vue'
 
 type UserDetailData = {
   id: number
   idTag: string
   name: string
   email: string
+
   phone: string
   createdAt: number
   verifiedAt: number
@@ -25,6 +27,8 @@ const data: Ref<UserDetailData> = ref({
   createdAt: 0,
   verifiedAt: 0
 })
+
+const editUserModalVisible: Ref<boolean> = ref(false)
 
 const route = useRoute()
 
@@ -61,6 +65,15 @@ const loadUserData = () => {
   })
 }
 
+const onEditUserModalClose = () => {
+  editUserModalVisible.value = false
+  loadUserData()
+}
+
+const onEditButtonClick = () => {
+  editUserModalVisible.value = true
+}
+
 onMounted(() => {
   changeHeaderTitle('User Detail View')
   loadUserData()
@@ -75,5 +88,15 @@ onMounted(() => {
     :phone="data.phone"
     :createdAt="formatDatetime(data.createdAt)"
     :verifiedAt="formatDatetime(data.verifiedAt)"
+    @onEditClick="onEditButtonClick"
+  />
+
+  <EditUserModal
+    v-if="editUserModalVisible"
+    :id="data.id"
+    :email="data.email"
+    :name="data.name"
+    :phone="data.phone"
+    @onClose="onEditUserModalClose"
   />
 </template>
