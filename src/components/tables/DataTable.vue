@@ -18,6 +18,7 @@ interface Props {
   sortBy: string
   sort: 'asc' | 'desc'
   clickable: boolean
+  showAction: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -30,7 +31,8 @@ const props = withDefaults(defineProps<Props>(), {
   pageSize: 0,
   sortBy: '',
   sort: 'asc',
-  clickable: true
+  clickable: true,
+  showAction: false
 })
 
 defineEmits<{
@@ -41,6 +43,7 @@ defineEmits<{
   (e: 'onPageClick', page: number): void
   (e: 'onSortClick', field: string, sort: 'asc' | 'desc'): void
   (e: 'onRowClick', index: number): void
+  (e: 'onEditClick', index: number): void
 }>()
 
 const currentStart = computed((): number => {
@@ -103,6 +106,9 @@ const getPaginationList = computed((): Array<number> => {
                 </span>
               </div>
             </th>
+            <th v-if="showAction">
+              <div class="d-flex align-items-center">Actions</div>
+            </th>
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
@@ -113,6 +119,11 @@ const getPaginationList = computed((): Array<number> => {
             @click="$emit('onRowClick', index)"
           >
             <td v-for="(field, i) in row" :key="i">{{ field }}</td>
+            <td v-if="showAction">
+              <span class="d-flex align-items-center">
+                <i class="edit-icon bx bx-edit" @click="$emit('onEditClick', index)"></i>
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -199,5 +210,17 @@ const getPaginationList = computed((): Array<number> => {
 .clickable:hover {
   background-color: rgba(67, 89, 113, 0.04);
   cursor: pointer;
+}
+
+.edit-icon {
+  color: #566a7f;
+  font-size: 1rem;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+
+.edit-icon:hover {
+  background-color: rgba(67, 89, 113, 0.15);
+  border-radius: 12px;
 }
 </style>
