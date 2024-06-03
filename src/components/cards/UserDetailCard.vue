@@ -1,5 +1,11 @@
 <script lang="ts" setup>
 import ReadonlyInput from '@/components/inputs/ReadonlyInput.vue'
+import InputButton from '../inputs/InputButton.vue'
+import ChangePasswordModal from '../modals/ChangePasswordModal.vue'
+
+import { useUserVerificationStore } from '@/stores/userVerification'
+import { useViewStore } from '@/stores/view'
+import { ref, type Ref } from 'vue'
 
 defineProps({
   id: {
@@ -32,12 +38,56 @@ defineProps({
   }
 })
 
+const changePasswordModalVisible: Ref<boolean> = ref(false)
+
+const viewStore = useViewStore()
+const userVerificationStore = useUserVerificationStore()
+
 const emit = defineEmits<{
   (e: 'onEditClick'): void
 }>()
 
 const onEditClick = () => {
   emit('onEditClick')
+}
+
+const onVerifyUserClick = (id: number) => {
+  let params: URLSearchParams = new URLSearchParams()
+  params.append('user_id', id.toString())
+  viewStore.showSpinnerOverlay()
+
+  userVerificationStore
+    .verifyUser({
+      params: params
+    })
+    .then((response: any) => {
+      viewStore.hideSpinnerOverlay()
+      viewStore.changeToastLabel('User has been verified successfully.')
+      viewStore.showToast()
+    })
+    .catch((error: any) => {
+      console.error(error)
+
+      let errorDetail = ''
+
+      if (error.response.data.errors) {
+        if (error.response.data.errors.user_id) {
+          errorDetail = error.response.data.errors.user_id
+        }
+      }
+
+      viewStore.hideSpinnerOverlay()
+      viewStore.changeToastLabel(`Failed to verify user. Please try again. ${errorDetail}`)
+      viewStore.showToast()
+    })
+}
+
+const onChangePasswordClick = () => {
+  changePasswordModalVisible.value = true
+}
+
+const onChangePasswordModalClose = () => {
+  changePasswordModalVisible.value = false
 }
 </script>
 <template>
@@ -54,7 +104,17 @@ const onEditClick = () => {
       <ReadonlyInput label="Created At" :value="createdAt" />
       <ReadonlyInput label="Verified At" :value="verifiedAt" />
     </div>
+    <div class="card-control">
+      <InputButton label="Verify User" type="secondary" @click="onVerifyUserClick(id)" />
+      <InputButton label="Reset Password" type="warning" @click="onChangePasswordClick" />
+    </div>
   </div>
+  <ChangePasswordModal
+    v-if="changePasswordModalVisible"
+    :id="id"
+    :visible="changePasswordModalVisible"
+    @onClose="onChangePasswordModalClose"
+  />
 </template>
 
 <style scoped>
@@ -72,5 +132,11 @@ const onEditClick = () => {
 .edit-icon:hover {
   background-color: rgba(67, 89, 113, 0.15);
   border-radius: 12px;
+}
+
+.card-control {
+  padding-left: 24px;
+  padding-bottom: 24px;
+  display: flex;
 }
 </style>

@@ -91,6 +91,7 @@ const totalPage = computed((): number => {
 })
 
 const loadData = () => {
+  console.log('loadData called')
   getAll({
     query: `page=${state.value.page}&page_size=${state.value.pageSize}&query=${state.value.query}&sort_by=${state.value.sortBy}&sort=${state.value.sort}`
   })
@@ -151,9 +152,9 @@ const onEditChargePointPortPriceModalClose = () => {
   loadData()
 }
 
-const onEditButtonClick = (id: number) => {
+const onEditButtonClick = (index: number) => {
   editChargePointPortPriceModalVisible.value = true
-  chargePointPortIdToEdit.value = id
+  chargePointPortIdToEdit.value = state.value.idRows[index]
 }
 
 onMounted(() => {
