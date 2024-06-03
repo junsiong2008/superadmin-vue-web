@@ -3,8 +3,8 @@ import { RouterView } from 'vue-router'
 import { computed } from 'vue'
 
 import { useViewStore } from './stores/view'
-import SpinnerOverlay from '@/components/loader/SpinnerOverlay.vue'
-import ToastMessage from './components/toasts/ToastMessage.vue'
+import { SpinnerOverlay } from '@/components/loader'
+import { ToastMessage } from '@/components/toasts'
 
 import '@/assets/vendor/js/helpers.js'
 import '@/assets/js/config.js'

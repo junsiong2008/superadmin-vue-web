@@ -4,11 +4,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthenticationStore } from '@/stores/authentication'
 import { useViewStore } from '@/stores/view'
-import SpinnerOverlay from '@/components/loader/SpinnerOverlay.vue'
-import InputText from '@/components/inputs/InputText.vue'
-import InputButton from '@/components/inputs/InputButton.vue'
-import MainLogo from '@/components/logos/MainLogo.vue'
-import AuthCard from '@/components/cards/AuthCard.vue'
+import { SpinnerOverlay } from '@/components/loader'
+import { InputText, InputButton } from '@/components/inputs'
+import { MainLogo } from '@/components/logos'
+import { AuthCard } from '@/components/cards'
 
 type LoginViewState = {
   username: string

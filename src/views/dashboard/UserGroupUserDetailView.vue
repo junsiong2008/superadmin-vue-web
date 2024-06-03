@@ -4,8 +4,8 @@ import type { Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useViewStore } from '@/stores/view'
 import { useUserGroupUserStore } from '@/stores/userGroupUser'
-import UserGroupUserDetailCard from '@/components/cards/UserGroupUserDetailCard.vue'
-import EditUserGroupUserModal from '@/components/modals/EditUserGroupUserModal.vue'
+import { UserGroupUserDetailCard } from '@/components/cards'
+import { EditUserGroupUserModal } from '@/components/modals'
 
 type UserGroupUserDetailData = {
   id: number

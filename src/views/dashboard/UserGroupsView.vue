@@ -8,9 +8,9 @@ import { useUserGroupStore } from '@/stores/userGroup'
 import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
 
-import DataTable from '@/components/tables/DataTable.vue'
-import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
-import AddUserGroupModal from '@/components/modals/AddUserGroupModal.vue'
+import { DataTable } from '@/components/tables'
+import { InputFloatingButton } from '@/components/inputs'
+import { AddUserGroupModal } from '@/components/modals'
 
 type Header = {
   name: string

@@ -9,9 +9,9 @@ import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
 import { useChargePointStore } from '@/stores/chargePoint'
 
-import DataTable from '@/components/tables/DataTable.vue'
-import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
-import AddChargePointPortModal from '@/components/modals/AddChargePointPortModal.vue'
+import { DataTable } from '@/components/tables'
+import { InputFloatingButton } from '@/components/inputs'
+import { AddChargePointPortModal } from '@/components/modals'
 
 type Header = {
   name: string

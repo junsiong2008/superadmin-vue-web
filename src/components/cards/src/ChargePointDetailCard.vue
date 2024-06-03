@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import ReadonlyInput from '@/components/inputs/ReadonlyInput.vue'
+import { ReadonlyInput } from '@/components/inputs'
+
 defineProps({
   id: {
     type: Number,
@@ -9,45 +10,37 @@ defineProps({
     type: String,
     default: ''
   },
-  current: {
-    type: Number,
-    default: 0
-  },
-  chargePointId: {
-    type: Number,
-    default: 0
-  },
-  connectorId: {
-    type: Number,
-    default: 0
-  },
-  chargePointName: {
+  vendor: {
     type: String,
     default: ''
   },
-  electricityType: {
+  chargePointLocationName: {
     type: String,
     default: ''
   },
-  meterValue: {
+  count: {
     type: Number,
     default: 0
   },
-  power: {
-    type: Number,
-    default: 0
-  },
-  type: {
+  description: {
     type: String,
     default: ''
   },
-  voltage: {
-    type: Number,
-    default: 0
-  },
-  status: {
+  serialNumber: {
     type: String,
     default: ''
+  },
+  model: {
+    type: String,
+    default: ''
+  },
+  firmwareVersion: {
+    type: String,
+    default: ''
+  },
+  chargePointLocationId: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -66,15 +59,12 @@ const onEditClick = () => {
       <i class="edit-icon bx bx-edit" @click="onEditClick"></i>
     </div>
     <div class="card-body">
-      <ReadonlyInput label="AC/DC" :value="electricityType" />
-      <ReadonlyInput label="Type" :value="type" />
-      <ReadonlyInput label="Current" :value="`${current}A`" />
-      <ReadonlyInput label="Voltage" :value="`${voltage}V`" />
-      <ReadonlyInput label="Meter Value" :value="meterValue" />
-      <ReadonlyInput label="Status" :value="status" />
-      <ReadonlyInput label="Charge Point Id" :value="chargePointId" />
-      <ReadonlyInput label="Charge Point Name" :value="chargePointName" />
-      <ReadonlyInput label="Connector Id" :value="connectorId" />
+      <ReadonlyInput label="Vendor" :value="vendor" />
+      <ReadonlyInput label="Charge Point Location Name" :value="chargePointLocationName" />
+      <ReadonlyInput label="Charge Point Port Count" :value="count" />
+      <ReadonlyInput label="Description" :value="description" />
+      <ReadonlyInput label="Serial Number" :value="serialNumber" />
+      <ReadonlyInput label="Firmware Version" :value="firmwareVersion" />
     </div>
   </div>
 </template>

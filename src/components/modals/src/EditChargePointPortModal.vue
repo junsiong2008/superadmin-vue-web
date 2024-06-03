@@ -3,9 +3,8 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useChargePointPortStore } from '@/stores/chargePointPort'
 import { useViewStore } from '@/stores/view'
 import { useChargePointStore } from '@/stores/chargePoint'
-import MainModal from '@/components/modals/MainModal.vue'
-import InputSelect from '@/components/inputs/InputSelect.vue'
-import InputText from '@/components/inputs/InputText.vue'
+import { MainModal } from '@/components/modals'
+import { InputText, InputSelect } from '@/components/inputs'
 
 type Option = {
   key: number | string

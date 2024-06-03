@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import { ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref } from 'vue'
 import { useChargePointStore } from '@/stores/chargePoint'
+import { useChargePointLocationStore } from '@/stores/chargePointLocation'
 import { useViewStore } from '@/stores/view'
-
-import MainModal from '@/components/modals/MainModal.vue'
-import InputText from '@/components/inputs/InputText.vue'
-import InputSelect from '@/components/inputs/InputSelect.vue'
+import { MainModal } from '@/components/modals'
+import { InputText, InputSelect } from '@/components/inputs'
 
 type ChargePointLocationOption = {
   key: number | string
   label: string
 }
 
-type AddChargePointState = {
+type EditChargePointState = {
   name: string
   nameError: string
   description: string
@@ -26,53 +25,106 @@ type AddChargePointState = {
   firmwareVersionError: string
   chargePointLocationId: number
   chargePointLocationIdError: string
+  chargePointIdError: string
 }
 
-const chargePoint: Ref<AddChargePointState> = ref({
-  name: '',
-  nameError: '',
-  description: '',
-  serialNumber: '',
-  serialNumberError: '',
-  model: '',
-  modelError: '',
-  vendor: '',
-  vendorError: '',
-  firmwareVersion: '',
-  firmwareVersionError: '',
-  chargePointLocationId: 0,
-  chargePointLocationIdError: ''
+const props = defineProps({
+  id: {
+    type: Number,
+    default: 0
+  },
+  name: {
+    type: String,
+    default: ''
+  },
+  description: {
+    type: String,
+    default: ''
+  },
+  serialNumber: {
+    type: String,
+    default: ''
+  },
+  model: {
+    type: String,
+    default: ''
+  },
+  vendor: {
+    type: String,
+    default: ''
+  },
+  firmwareVersion: {
+    type: String,
+    default: ''
+  },
+  chargePointLocationId: {
+    type: Number,
+    default: 0
+  }
 })
 
-defineProps({
-  visible: {
-    type: Boolean,
-    default: false
-  },
-  chargePointLocationOptions: {
-    type: Array<ChargePointLocationOption>,
-    default: []
-  }
+const chargePoint: Ref<EditChargePointState> = ref({
+  name: props.name,
+  nameError: '',
+  description: props.description,
+  serialNumber: props.serialNumber,
+  serialNumberError: '',
+  model: props.model,
+  modelError: '',
+  vendor: props.vendor,
+  vendorError: '',
+  firmwareVersion: props.firmwareVersion,
+  firmwareVersionError: '',
+  chargePointLocationId: props.chargePointLocationId,
+  chargePointLocationIdError: '',
+  chargePointIdError: ''
 })
 
 const emit = defineEmits<{
   (e: 'onClose'): void
 }>()
 
+const chargePointLocationOptions: Ref<Array<ChargePointLocationOption>> = ref([])
+
 const viewStore = useViewStore()
 const chargePointStore = useChargePointStore()
+const chargePointLocationStore = useChargePointLocationStore()
+
+const loadChargePointLocationData = () => {
+  chargePointLocationStore
+    .getAll({
+      query: `page=1&page_size=100`
+    })
+    .then((response: any) => {
+      if (response.data.data.charge_point_locations) {
+        let tmpChargePointLocationOptions: Array<{
+          key: number | string
+          label: string
+        }> = []
+
+        for (let i = 0; i < response.data.data.charge_point_locations.length; i++) {
+          tmpChargePointLocationOptions.push({
+            key: response.data.data.charge_point_locations[i].id,
+            label: response.data.data.charge_point_locations[i].name
+          })
+        }
+
+        chargePointLocationOptions.value = tmpChargePointLocationOptions
+      }
+    })
+}
 
 const onClose = () => {
   emit('onClose')
 }
 
 const onSelect = (option: ChargePointLocationOption) => {
-  chargePoint.value.chargePointLocationIdError = ''
   chargePoint.value.chargePointLocationId = option.key as number
 }
 
 const onOkClick = () => {
   clearError()
+
   let params: URLSearchParams = new URLSearchParams()
   params.append('name', chargePoint.value.name)
   params.append('description', chargePoint.value.description)
@@ -80,15 +132,17 @@ const onOkClick = () => {
   params.append('model', chargePoint.value.model)
   params.append('vendor', chargePoint.value.vendor)
   params.append('firmware_version', chargePoint.value.firmwareVersion)
+  params.append('charge_point_location_id', chargePoint.value.chargePointLocationId.toString())
   viewStore.showSpinnerOverlay()
+
   chargePointStore
-    .add({
-      path: chargePoint.value.chargePointLocationId.toString(),
+    .update({
+      path: props.id,
       params: params
     })
     .then((response: any) => {
       viewStore.hideSpinnerOverlay()
-      viewStore.changeToastLabel('A new charge point has been added successfully.')
+      viewStore.changeToastLabel('Charge Point has been edited successfully.')
       viewStore.showToast()
       emit('onClose')
     })
@@ -114,6 +168,9 @@ const onOkClick = () => {
           chargePoint.value.chargePointLocationIdError =
             error.response.data.errors.charge_point_location_id
         }
+        if (error.response.data.errors.charge_point_id) {
+          chargePoint.value.chargePointIdError = error.response.data.errors.charge_point_id
+        }
       }
 
       viewStore.hideSpinnerOverlay()
@@ -129,19 +186,24 @@ const clearError = () => {
   chargePoint.value.serialNumberError = ''
   chargePoint.value.firmwareVersionError = ''
   chargePoint.value.chargePointLocationIdError = ''
+  chargePoint.value.chargePointIdError = ''
 }
+onMounted(() => {
+  loadChargePointLocationData()
+})
 </script>
 
 <template>
   <MainModal
-    :visible="visible"
-    title="Add Charge Point"
+    :visible="true"
+    title="Edit Charge Point"
     @onClose="onClose"
     @onOkClick="onOkClick"
     @onCancelClick="onClose"
   >
     <div class="mb-3">
       <InputSelect
+        v-model="chargePoint.chargePointLocationId"
         label="Charge Point Location"
         :options="chargePointLocationOptions"
         :error="chargePoint.chargePointLocationIdError"

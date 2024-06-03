@@ -2,9 +2,8 @@
 import { ref, type Ref } from 'vue'
 import { useViewStore } from '@/stores/view'
 import { useUserGroupStore } from '@/stores/userGroup'
-
-import MainModal from '@/components/modals/MainModal.vue'
-import InputText from '@/components/inputs/InputText.vue'
+import { MainModal } from '@/components/modals'
+import { InputText } from '@/components/inputs'
 
 type AddUserGroupState = {
   name: string

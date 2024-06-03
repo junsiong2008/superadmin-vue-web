@@ -10,9 +10,9 @@ import { useSearchStore } from '@/stores/search'
 import { useUserGroupStore } from '@/stores/userGroup'
 import { useUserStore } from '@/stores/user'
 
-import DataTable from '@/components/tables/DataTable.vue'
-import InputFloatingButton from '@/components/inputs/InputFloatingButton.vue'
-import AddUserGroupUserModal from '@/components/modals/AddUserGroupUserModal.vue'
+import { DataTable } from '@/components/tables'
+import { InputFloatingButton } from '@/components/inputs'
+import { AddUserGroupUserModal } from '@/components/modals'
 
 type Header = {
   name: string

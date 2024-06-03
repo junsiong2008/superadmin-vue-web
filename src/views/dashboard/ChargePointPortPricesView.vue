@@ -8,8 +8,8 @@ import { useChargePointPortPriceStore } from '@/stores/chargePointPortPrice'
 import { useTableStore } from '@/stores/table'
 import { useSearchStore } from '@/stores/search'
 
-import DataTable from '@/components/tables/DataTable.vue'
-import EditChargePointPortPriceModal from '@/components/modals/EditChargePointPortPriceModal.vue'
+import { DataTable } from '@/components/tables'
+import { EditChargePointPortPriceModal } from '@/components/modals'
 
 type Header = {
   name: string

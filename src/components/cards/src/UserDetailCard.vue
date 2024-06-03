@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import ReadonlyInput from '@/components/inputs/ReadonlyInput.vue'
-import InputButton from '../inputs/InputButton.vue'
-import ChangePasswordModal from '../modals/ChangePasswordModal.vue'
-
+import { ref, type Ref } from 'vue'
 import { useUserVerificationStore } from '@/stores/userVerification'
 import { useViewStore } from '@/stores/view'
-import { ref, type Ref } from 'vue'
+import { ChangePasswordModal } from '@/components/modals'
+import { ReadonlyInput, InputButton } from '@/components/inputs'
 
 defineProps({
   id: {

@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 import { useViewStore } from '@/stores/view'
 import { useAuthenticationStore } from '@/stores/authentication'
 import router from '@/router'
-import SearchBar from '../search/SearchBar.vue'
+import { SearchBar } from '@/components/search'
 
 const route = useRoute()
 

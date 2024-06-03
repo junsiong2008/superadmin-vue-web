@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
-
-import MainModal from '@/components/modals/MainModal.vue'
-import InputText from '@/components/inputs/InputText.vue'
 import { useViewStore } from '@/stores/view'
 import { useUserChangePasswordStore } from '@/stores/userChangePassword'
 import { useAuthenticationStore } from '@/stores/authentication'
+import { MainModal } from '@/components/modals'
+import { InputText } from '@/components/inputs'
 
 type ChangePasswordState = {
   password: string

@@ -3,10 +3,9 @@ import { ref, type Ref, onMounted, watch } from 'vue'
 import { useChargePointLocationStore } from '@/stores/chargePointLocation'
 import { useViewStore } from '@/stores/view'
 import { useUserGroupStore } from '@/stores/userGroup'
-import MainModal from '@/components/modals/MainModal.vue'
-import InputText from '@/components/inputs/InputText.vue'
-import ToggleSwitch from '@/components/switches/ToggleSwitch.vue'
-import InputSelect from '@/components/inputs/InputSelect.vue'
+import { MainModal } from '@/components/modals'
+import { InputText, InputSelect } from '@/components/inputs'
+import { ToggleSwitch } from '@/components/switches'
 
 type UserGroupOption = {
   key: number | string

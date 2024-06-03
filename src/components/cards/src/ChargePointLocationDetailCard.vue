@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import ReadonlyInput from '@/components/inputs/ReadonlyInput.vue'
-
+import { ReadonlyInput } from '@/components/inputs'
 defineProps({
   id: {
     type: Number,
@@ -10,17 +9,33 @@ defineProps({
     type: String,
     default: ''
   },
-  phone: {
+  address: {
     type: String,
     default: ''
   },
-  email: {
-    type: String,
-    default: ''
+  latitude: {
+    type: Number,
+    default: 0
   },
-  isRemoved: {
+  longitude: {
+    type: Number,
+    default: 0
+  },
+  count: {
+    type: Number,
+    default: 0
+  },
+  isPrivate: {
     type: Boolean,
     default: false
+  },
+  userGroupId: {
+    type: Number,
+    default: 0
+  },
+  userGroupName: {
+    type: String,
+    default: ''
   }
 })
 
@@ -39,9 +54,12 @@ const onEditClick = () => {
       <i class="edit-icon bx bx-edit" @click="onEditClick"></i>
     </div>
     <div class="card-body">
-      <ReadonlyInput label="Phone" :value="phone" />
-      <ReadonlyInput label="Email" :value="email" />
-      <ReadonlyInput label="Is Removed" :value="isRemoved" />
+      <ReadonlyInput label="Address" :value="address" />
+      <ReadonlyInput label="Latitude" :value="latitude" />
+      <ReadonlyInput label="Longitude" :value="longitude" />
+      <ReadonlyInput label="Count" :value="count" />
+      <ReadonlyInput label="Is Private" :value="isPrivate" />
+      <ReadonlyInput label="User Group Name" :value="userGroupName" />
     </div>
   </div>
 </template>

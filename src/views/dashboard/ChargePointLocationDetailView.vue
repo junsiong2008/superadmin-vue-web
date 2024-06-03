@@ -4,8 +4,8 @@ import type { Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChargePointLocationStore } from '@/stores/chargePointLocation'
 import { useViewStore } from '@/stores/view'
-import ChargePointLocationDetailCard from '@/components/cards/ChargePointLocationDetailCard.vue'
-import EditChargePointLocationModal from '@/components/modals/EditChargePointLocationModal.vue'
+import { ChargePointLocationDetailCard } from '@/components/cards'
+import { EditChargePointLocationModal } from '@/components/modals'
 
 type ChargePointLocationDetailData = {
   id: number

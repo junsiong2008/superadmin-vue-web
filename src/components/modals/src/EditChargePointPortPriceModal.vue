@@ -2,8 +2,8 @@
 import { useChargePointPortPriceStore } from '@/stores/chargePointPortPrice'
 import { useViewStore } from '@/stores/view'
 import { ref, type Ref } from 'vue'
-import MainModal from '@/components/modals/MainModal.vue'
-import InputText from '@/components/inputs/InputText.vue'
+import { MainModal } from '@/components/modals'
+import { InputText } from '@/components/inputs'
 
 type EditChargePointPortPriceState = {
   price: string

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import InputButton from '@/components/inputs/InputButton.vue'
+import { InputButton } from '@/components/inputs'
 
 defineProps({
   visible: {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ReadonlyInput from '@/components/inputs/ReadonlyInput.vue'
+import { ReadonlyInput } from '@/components/inputs'
 
 defineProps({
   id: {

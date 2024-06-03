@@ -4,8 +4,8 @@ import type { Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useViewStore } from '@/stores/view'
 import { useUserStore } from '@/stores/user'
-import UserDetailCard from '@/components/cards/UserDetailCard.vue'
-import EditUserModal from '@/components/modals/EditUserModal.vue'
+import { UserDetailCard } from '@/components/cards'
+import { EditUserModal } from '@/components/modals'
 
 type UserDetailData = {
   id: number

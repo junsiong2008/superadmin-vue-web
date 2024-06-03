@@ -2,10 +2,8 @@
 import { ref, type Ref } from 'vue'
 import { useViewStore } from '@/stores/view'
 import { useUserStore } from '@/stores/user'
-
-import MainModal from '@/components/modals/MainModal.vue'
-import InputText from '@/components/inputs/InputText.vue'
-import InputSelect from '@/components/inputs/InputSelect.vue'
+import { MainModal } from '@/components/modals'
+import { InputText, InputSelect } from '@/components/inputs'
 
 type Option = {
   key: number | string
